@@ -1,0 +1,8 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/light_grey" /> <!-- Background color of the dialog -->
+    <stroke
+        android:width="@dimen/_4sdp"
+        android:color="@color/white" />
+    <corners android:radius="@dimen/_20ssp" /> <!-- Adjust the radius as per your requirement -->
+</shape>

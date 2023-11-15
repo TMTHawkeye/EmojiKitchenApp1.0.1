@@ -1,0 +1,95 @@
+<resources>
+    <string name="app_name" translatable="false">Emoji Kitchen</string>
+
+    <string name="modelName" translatable="false">emojis</string>
+    <string name="BASE_URL" translatable="false">https://ilyassesalama.github.io/EmojiMixer/emojis/supported_emojis_png/</string>
+    <string name="fixed_date_emoji" translatable="false">20201001</string>
+    <string name="assetPath" translatable="false">supported_emojis_png</string>
+    <string name="storagePermissionCode" translatable="false">1</string>
+    <string name="apiUrl" translatable="false">https://www.gstatic.com/android/keyboard/emojikitchen/</string>
+    <string name="apiLOG" translatable="false">EMOJI_LOGS</string>
+    <string name="my_creationFolderName" translatable="false">My_Created_Emojis</string>
+    <string name="my_created_gifs_folderName" translatable="false">My_Created_Gifs</string>
+    <string name="storageReferenceFirebase" translatable="false">gs://emojitestapp.appspot.com</string>
+    <string name="realtimeDatabseReference" translatable="false">https://emojitestapp-default-rtdb.asia-southeast1.firebasedatabase.app/</string>
+    <string name="add" translatable="false">+</string>
+    <string name="firebaseFolderName" translatable="false">emojis</string>
+    <string name="favListPaperDb" translatable="false">listofFav</string>
+    <string name="concatenated_likes" translatable="false"> likes</string>
+    <string name="concatenated_shares" translatable="false"> shares</string>
+    <string name="concatenated_dloads" translatable="false"> downloads</string>
+    <string name="splashTime" translatable="false">5000</string>
+    <string name="loading_emoji_time" translatable="false">2000</string>
+    <string name="firebase_supported_emojis_folder" translatable="false">supported_emojis</string>
+
+
+    <string name="failed_to_save">Failed to Save</string>
+    <string name="mixEmojis">Mix Emoji</string>
+    <string name="letsStart">Lets Start</string>
+    <string name="selectLanguage">Select Language</string>
+    <string name="merge">Merge</string>
+    <string name="collection">Collection</string>
+    <string name="mycreation">My Creation</string>
+    <string name="mygifs">My Gifs</string>
+    <string name="favourites">Favourites</string>
+    <string name="newEmoji">New Emoji</string>
+    <string name="createNew">Create New Emoji</string>
+    <string name="createGif">Create Gif</string>
+    <string name="alreadyExistsGif">Gif Already Exists</string>
+    <string name="gifCreationSuccess">Gif created succcessfully!</string>
+    <string name="rateUs">Rate Us</string>
+    <string name="exitBtn">Exit</string>
+    <string name="later">May be Later</string>
+    <string name="cancel">Cancel</string>
+    <string name="aboutUs">About Us</string>
+    <string name="shareApp">Share App</string>
+    <string name="feedback">Feedback</string>
+    <string name="languages">Languages</string>
+    <string name="privacyPolicy">Privacy Policy</string>
+    <string name="loading">This page may contain ads</string>
+    <string name="loading_dialog" translatable="false">Loading...</string>
+    <string name="mergeEmojisToast">Please choose emojis to merge!!</string>
+   <string name="allowStoragePermToast">Please allow storage permissions to proceed.</string>
+    <string name="commingSoon">Comming Soon</string>
+    <string name="rateApp">Would  you like to rate
+our app?</string>
+    <string name="emojiLoading">Emoji Loading</string>
+    <string name="gifLoading">Gif Loading</string>
+    <string name="gifCreationTitle">Creating Gif</string>
+    <string name="settings">Settings</string>
+    <string name="noData">No data found</string>
+    <string name="emojinotCreated">Emoji not created, an
+error occured</string>
+    <string name="savedToGalleryToast">Emoji have been saved to gallery!</string>
+    <string name="addToFavouritesToast">Emoji have been added to Favourites!</string>
+    <string name="removeFromFavouritesToast">Emoji have been removed from Favourites</string>
+    <string name="exit_app_text">Do you really want to exit this app?</string>
+
+
+
+
+    <style name="textStyle" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/maroon</item>
+        <item name="android:fontFamily">@font/itim</item>
+        <item name="android:textSize">@dimen/_20ssp</item>
+
+    </style>
+
+
+    <style name="buttonStyle">
+        <item name="android:layout_width">@dimen/_250sdp</item>
+        <item name="android:layout_height">@dimen/_50sdp</item>
+        <!--        <item name="android:background">@drawable/background_layered_button</item>-->
+        <!--        <item name="android:layout_gravity">center_horizontal</item>-->
+                <item name="android:textColor">@color/maroon</item>
+        <!--        <item name="android:textSize">@dimen/_20ssp</item>-->
+                <item name="android:fontFamily">@font/itim</item>
+
+    </style>
+
+    <style name="CustomProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/progress_bg</item>
+    </style>
+
+</resources>

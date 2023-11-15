@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "177284030539",
+    "firebase_url": "https://emoji-mixer-40a84-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "emoji-mixer-40a84",
+    "storage_bucket": "emoji-mixer-40a84.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:177284030539:android:6fdd358bb20e4eeb5a2dce",
+        "android_client_info": {
+          "package_name": "com.emojimerger.mixemojis.emojifun"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATEj7micQ_sfiY9UPGlLf-QxJZ-OWBwT0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

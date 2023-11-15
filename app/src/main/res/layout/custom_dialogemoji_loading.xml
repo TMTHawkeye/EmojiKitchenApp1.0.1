@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/linear_dialog"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/_60ssp">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_bg_loading"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_200sdp"
+        android:alpha="0.3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_rawRes="@raw/moving_light" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_80ssp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_23ssp"
+            android:layout_marginTop="@dimen/_60ssp"
+            android:background="@drawable/rounded_dialog_bg"
+            android:orientation="vertical">
+
+            <com.iambedant.text.OutlineTextView
+                style="@style/textStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_50ssp"
+                android:text="@string/loading_dialog"
+                android:textColor="@color/light_yellow"
+                android:textSize="@dimen/_12ssp"
+                app:outlineColor="@color/black"
+                app:outlineWidth="0.5" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_loading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_20ssp"
+                app:lottie_rawRes="@raw/loading_progress_bar" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_60sdp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/_20ssp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_image_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@android:color/transparent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_120sdp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="@dimen/_20ssp"
+                android:scaleType="fitXY"
+                android:src="@drawable/emoji_loading_header" />
+
+            <com.iambedant.text.OutlineTextView
+                android:id="@+id/loading_title"
+                style="@style/textStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_25ssp"
+                android:text="@string/emojiLoading"
+                android:textColor="@color/light_yellow"
+                android:textSize="@dimen/_12ssp"
+                app:outlineColor="@color/grey"
+                app:outlineWidth="0.2" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/gradient_bg_home">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_200sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/lottie_bg_exit"
+        app:lottie_rawRes="@raw/moving_light"
+        android:alpha="0.3"/>
+
+    <LinearLayout
+        android:id="@+id/linear_exit_card"
+        android:background="@drawable/rounded_dialog_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/_80ssp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginHorizontal="@dimen/_23ssp"
+        android:padding="@dimen/_10ssp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/exit_icon"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/_20ssp"/>
+
+        <com.iambedant.text.OutlineTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            app:outlineColor="@color/black"
+            style="@style/textStyle"
+            android:textSize="@dimen/_17ssp"
+            android:textColor="@color/light_yellow"
+            app:outlineWidth="0.5"
+            android:gravity="center"
+            android:text="@string/exit_app_text"
+            android:layout_gravity="center_horizontal"/>
+
+        <RelativeLayout
+            android:id="@+id/card_Exit"
+            style="@style/buttonStyle"
+            android:layout_marginVertical="@dimen/_10ssp"
+            android:layout_gravity="center_horizontal">
+
+            <ImageView
+                android:layout_margin="@dimen/_2ssp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/btn_bg" />
+
+            <TextView
+                style="@style/textStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="@string/exitBtn" />
+
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_marginBottom="@dimen/_10ssp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/cancel"
+            android:fontFamily="@font/itim"/>
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_marginHorizontal="@dimen/_20ssp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_200sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linear_exit_card"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

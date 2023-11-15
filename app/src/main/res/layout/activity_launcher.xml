@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg_home"
+    tools:context=".Activities.LauncherActivity">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_movinglight"
+        android:alpha="0.2"
+        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:lottie_rawRes="@raw/moving_light"/>
+
+    <ImageView
+        android:id="@+id/img_home"
+        android:layout_width="@dimen/_250sdp"
+        android:layout_height="@dimen/_200sdp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/_40ssp"
+        android:src="@drawable/home_img"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_moving"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_marginStart="@dimen/_5ssp"
+        app:lottie_rawRes="@raw/loading_splash"
+        app:layout_constraintBottom_toTopOf="@+id/progress_splash"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <ProgressBar
+        android:layout_marginHorizontal="@dimen/_25ssp"
+        android:id="@+id/progress_splash"
+        style="@style/CustomProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_30sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_home"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.iambedant.text.OutlineTextView
+        android:id="@+id/loading_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progress_splash"
+        android:text="@string/loading"
+        android:layout_marginTop="@dimen/_10ssp"
+        style="@style/textStyle"
+        android:textSize="@dimen/_10ssp"
+        android:textColor="@color/white"
+        app:outlineColor="@color/black"
+        app:outlineWidth="0.1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

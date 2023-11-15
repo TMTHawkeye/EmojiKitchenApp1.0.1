@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint_parent_id"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg_home"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/relative_tolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp">
+
+        <RelativeLayout
+            android:id="@+id/relative_back"
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_15ssp"
+            android:background="@drawable/stroked_button_bg">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:padding="@dimen/_6ssp"
+                android:src="@drawable/back_btn" />
+        </RelativeLayout>
+
+        <com.iambedant.text.OutlineTextView
+            android:id="@+id/title_settings"
+            style="@style/textStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/settings"
+            android:textColor="@color/light_yellow"
+            app:outlineColor="@color/black"
+            app:outlineWidth="1" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/card_aboutUs"
+        style="@style/buttonStyle"
+        android:layout_marginVertical="@dimen/_10ssp"
+        android:layout_gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/btn_bg" />
+        <!-- Text: Collection -->
+        <TextView
+            style="@style/textStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/aboutUs" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/play"
+            android:layout_marginRight="@dimen/_20ssp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/card_rateUs"
+        style="@style/buttonStyle"
+        android:layout_marginVertical="@dimen/_10ssp"
+        android:layout_gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/btn_bg" />
+
+
+        <!-- Text: Collection -->
+        <TextView
+            style="@style/textStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/rateUs" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/play"
+            android:layout_marginRight="@dimen/_20ssp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/card_feedback"
+        style="@style/buttonStyle"
+        android:layout_marginVertical="@dimen/_10ssp"
+        android:layout_gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/btn_bg" />
+        <!-- Text: Collection -->
+        <TextView
+            style="@style/textStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/feedback" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/play"
+            android:layout_marginRight="@dimen/_20ssp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/card_privacy"
+        style="@style/buttonStyle"
+        android:layout_marginVertical="@dimen/_10ssp"
+        android:layout_gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/btn_bg" />
+        <!-- Text: Collection -->
+        <TextView
+            style="@style/textStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/privacyPolicy" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/play"
+            android:layout_marginRight="@dimen/_20ssp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/card_shareapp"
+        style="@style/buttonStyle"
+        android:layout_marginVertical="@dimen/_10ssp"
+        android:layout_gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/btn_bg" />
+        <!-- Text: Collection -->
+        <TextView
+            style="@style/textStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/shareApp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/play"
+            android:layout_marginRight="@dimen/_20ssp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/card_language"
+        style="@style/buttonStyle"
+        android:layout_marginVertical="@dimen/_10ssp"
+        android:layout_gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/btn_bg" />
+
+        <!-- Text: Collection -->
+        <TextView
+            style="@style/textStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/languages" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/play"
+            android:layout_marginRight="@dimen/_20ssp"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

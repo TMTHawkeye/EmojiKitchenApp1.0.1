@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg_home"
+    android:orientation="vertical"
+    tools:context=".Activities.FavouritesActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.1"
+        android:scaleType="fitXY"
+        android:src="@drawable/splash_bg" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:id="@+id/linear_no_item"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/noItemImageId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sad_emoji"
+            android:layout_gravity="center_horizontal"/>
+
+        <com.iambedant.text.OutlineTextView
+            android:layout_marginVertical="@dimen/_10ssp"
+            android:id="@+id/noItemText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/noData"
+            style="@style/textStyle"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/light_yellow"
+            app:outlineColor="@color/black"
+            app:outlineWidth="1" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15ssp"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:id="@+id/relative_back"
+                android:layout_width="@dimen/_32sdp"
+                android:layout_height="@dimen/_32sdp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/_15ssp"
+                android:background="@drawable/stroked_button_bg">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:padding="@dimen/_6ssp"
+                    android:src="@drawable/back_btn" />
+            </RelativeLayout>
+
+            <com.iambedant.text.OutlineTextView
+                android:id="@+id/title_collection"
+                style="@style/textStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="@dimen/_20ssp"
+                android:text="@string/mygifs"
+                android:textColor="@color/light_yellow"
+                app:outlineColor="@color/black"
+                app:outlineWidth="1" />
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/collectionRV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/_10ssp"
+            android:layout_marginTop="@dimen/_10ssp" />
+    </LinearLayout>
+
+</RelativeLayout>

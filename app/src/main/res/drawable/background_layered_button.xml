@@ -1,0 +1,102 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- White layer at the bottom -->
+
+    <!--white base-->
+    <item
+        android:bottom="@dimen/_1ssp"
+        android:left="@dimen/_1ssp"
+        android:right="@dimen/_1ssp"
+        android:top="@dimen/_1ssp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/white" />
+            <corners
+                android:bottomLeftRadius="@dimen/_50ssp"
+                android:bottomRightRadius="@dimen/_60ssp"
+                android:topLeftRadius="@dimen/_60ssp"
+                android:topRightRadius="@dimen/_50ssp" />
+        </shape>
+    </item>
+    <!-- Orange layer in the middle -->
+    <item
+        android:bottom="@dimen/_4ssp"
+        android:left="@dimen/_4ssp"
+        android:right="@dimen/_1ssp"
+        android:top="@dimen/_1ssp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/orange" />
+            <corners android:radius="@dimen/_25ssp" />
+        </shape>
+    </item>
+    <!-- Dark Yellow layer on top -->
+    <item
+        android:bottom="@dimen/_7ssp"
+        android:left="@dimen/_4ssp">
+        <shape android:shape="rectangle">
+            <padding android:top="@dimen/_2ssp" />
+            <gradient
+                android:angle="270"
+                android:endColor="@color/dark_yellow"
+                android:startColor="@color/light_yellow"
+                android:type="linear" />
+            <corners
+                android:bottomLeftRadius="@dimen/_21ssp"
+                android:bottomRightRadius="@dimen/_21ssp"
+                android:topLeftRadius="@dimen/_25ssp"
+                android:topRightRadius="@dimen/_25ssp" />
+        </shape>
+    </item>
+
+
+    <!--shine effect-->
+    <item>
+        <shape>
+            <gradient
+                android:centerX="8%"
+                android:centerY="17%"
+                android:gradientRadius="@dimen/_5ssp"
+                android:startColor="@color/grey"
+                android:type="radial" />
+        </shape>
+    </item>
+
+    <item>
+        <shape>
+            <gradient
+                android:centerX="12%"
+                android:centerY="13%"
+                android:gradientRadius="@dimen/_10ssp"
+                android:startColor="@color/grey"
+                android:type="radial" />
+        </shape>
+    </item>
+
+    <!--shine effect-->
+    <item>
+        <shape>
+            <gradient
+                android:centerX="17%"
+                android:centerY="12%"
+                android:gradientRadius="@dimen/_5ssp"
+                android:startColor="@color/grey"
+                android:type="radial" />
+        </shape>
+    </item>
+
+    <!--shine effect-->
+    <item
+        android:left="10dp"
+        android:top="10dp">
+        <shape android:shape="oval">
+            <gradient
+                android:centerX="10%"
+                android:centerY="10%"
+                android:gradientRadius="@dimen/_20ssp"
+                android:startColor="@color/grey"
+                android:type="radial" />
+
+            <corners android:radius="@dimen/_20ssp"/>
+        </shape>
+    </item>
+
+
+</layer-list>
