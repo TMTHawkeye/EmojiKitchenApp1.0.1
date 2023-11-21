@@ -13,9 +13,8 @@
         android:scaleType="fitXY"
         android:layout_width="match_parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingsAdConatiner"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:lottie_rawRes="@raw/moving_light"/>
 
@@ -24,20 +23,41 @@
         android:layout_width="@dimen/_250sdp"
         android:layout_height="@dimen/_200sdp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/_40ssp"
         android:src="@drawable/home_img"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingsAdConatiner"
+        app:layout_constraintBottom_toTopOf="@+id/card_letsStart"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_moving"
+        android:layout_width="@dimen/_50sdp"
+        android:layout_height="@dimen/_50sdp"
+        android:layout_marginStart="@dimen/_5ssp"
+        app:lottie_rawRes="@raw/loading_splash"
+        app:layout_constraintBottom_toTopOf="@+id/progress_splash"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <ProgressBar
+        android:layout_marginHorizontal="@dimen/_25ssp"
+        android:id="@+id/progress_splash"
+        style="@style/CustomProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_30sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_home"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <RelativeLayout
+        android:visibility="invisible"
         android:id="@+id/card_letsStart"
         style="@style/buttonStyle"
         android:layout_marginVertical="@dimen/_10ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_home">
+        app:layout_constraintTop_toBottomOf="@+id/img_home"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView
             android:layout_width="match_parent"
@@ -53,6 +73,24 @@
             android:gravity="center"
             android:text="@string/letsStart" />
     </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/settingsAdConatiner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_5ssp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_14sdp"
+        android:visibility="visible"
+        app:backgroundTint="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/home_native"
+            layout="@layout/native_loading_with_media" />
+    </FrameLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

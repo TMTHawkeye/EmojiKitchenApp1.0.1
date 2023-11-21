@@ -7,30 +7,49 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg_home">
 
-
     <ImageView
         android:id="@+id/img_home"
         android:layout_width="@dimen/_250sdp"
         android:layout_height="@dimen/_200sdp"
-        android:layout_marginTop="@dimen/_50ssp"
         android:src="@drawable/home_img"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/settingsAdConatiner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_5ssp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:visibility="visible"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toTopOf="@+id/scroll_btns"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_home">
+
+        <include
+            android:id="@+id/home_native"
+            layout="@layout/native_loading_with_media" />
+    </FrameLayout>
+
 
     <ScrollView
         android:id="@+id/scroll_btns"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_10ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/linear_btns"
-        app:layout_constraintTop_toBottomOf="@+id/img_home">
+        app:layout_constraintTop_toBottomOf="@+id/settingsAdConatiner"
+        app:layout_constraintBottom_toTopOf="@+id/linear_btns">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constrain_btns"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+            android:layout_height="match_parent">
 
             <RelativeLayout
                 android:id="@+id/card_mix_emoji"
@@ -67,9 +86,9 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_marginBottom="@dimen/_10ssp"
                 android:id="@+id/card_collection_emoji"
                 style="@style/buttonStyle"
+                android:layout_marginBottom="@dimen/_10ssp"
                 app:layout_constraintBottom_toTopOf="@+id/card_my_creation"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -99,9 +118,9 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_marginBottom="@dimen/_10ssp"
                 android:id="@+id/card_my_creation"
                 style="@style/buttonStyle"
+                android:layout_marginBottom="@dimen/_10ssp"
                 app:layout_constraintBottom_toTopOf="@+id/card_my_gifs"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -132,9 +151,9 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_marginBottom="@dimen/_10ssp"
                 android:id="@+id/card_my_gifs"
                 style="@style/buttonStyle"
+                android:layout_marginBottom="@dimen/_10ssp"
                 app:layout_constraintBottom_toTopOf="@+id/card_createGif"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -163,12 +182,13 @@
                     android:src="@drawable/play" />
 
             </RelativeLayout>
+
             <RelativeLayout
-                android:layout_marginBottom="@dimen/_10ssp"
                 android:id="@+id/card_createGif"
                 style="@style/buttonStyle"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="@dimen/_10ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/card_my_gifs">
 
@@ -196,10 +216,9 @@
 
             </RelativeLayout>
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </ScrollView>
+
 
     <LinearLayout
         android:id="@+id/linear_btns"

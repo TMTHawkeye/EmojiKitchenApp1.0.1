@@ -10,9 +10,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/emojiRV"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/_55ssp"
         android:layout_marginHorizontal="@dimen/_10ssp"
         android:padding="@dimen/_5ssp"
         app:layout_constraintBottom_toTopOf="@+id/btn_merge"
@@ -134,8 +133,7 @@
     <RelativeLayout
         android:id="@+id/btn_merge"
         style="@style/buttonStyle"
-        android:layout_marginVertical="@dimen/_40ssp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/age_banner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -155,6 +153,16 @@
             android:text="@string/merge" />
 
     </RelativeLayout>
+
+    <include
+        android:id="@+id/age_banner"
+        layout="@layout/layout_banner_control"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/progress_RV"

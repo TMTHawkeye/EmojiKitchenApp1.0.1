@@ -20,9 +20,11 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.setContent
+//import androidx.activity.compose.setContent
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.ads.control.ads.AperoAd
+import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.emojimerger.mixemojis.emojifun.R
 import com.emojimerger.mixemojis.emojifun.adapters.EmojiAdapter
 import com.emojimerger.mixemojis.emojifun.databinding.ActivityMixEmojiBinding
@@ -51,7 +53,9 @@ class MixEmojiActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMixEmojiBinding.inflate(layoutInflater)
 
-        setContent { setContentView(binding.root) }
+         setContentView(binding.root)
+        AperoAd.getInstance().loadBanner(this, BuildConfig.mix_emoji_banner)
+
         mExecutor.execute {
             initComponents()
             mHandler.post {
@@ -87,6 +91,8 @@ class MixEmojiActivity : BaseActivity() {
         viewModel =
             ViewModelProvider(this, MainViewModelFactory(repository)).get(MainViewModel::class.java)
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
+
+
 
     }
 
@@ -192,6 +198,7 @@ class MixEmojiActivity : BaseActivity() {
                     } else {
                         Toast.makeText(this, "No Internet Available!!", Toast.LENGTH_SHORT).show()
                         binding.progressImg.visibility = View.GONE
+                        finish()
                     }
                 }
             }

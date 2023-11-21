@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Emoji Kitchen</string>
+    <string name="app_name" translatable="false">Emoji Mixer</string>
 
     <string name="modelName" translatable="false">emojis</string>
     <string name="BASE_URL" translatable="false">https://ilyassesalama.github.io/EmojiMixer/emojis/supported_emojis_png/</string>

@@ -1,11 +1,12 @@
 package com.emojimerger.mixemojis.emojifun.Activities
 
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.ConnectivityManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -14,6 +15,12 @@ import android.view.Window
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.ads.control.ads.AperoAd
+import com.ads.control.ads.AperoAdCallback
+import com.ads.control.ads.wrapper.ApAdError
+import com.ads.control.ads.wrapper.ApNativeAd
+import com.ads.control.billing.AppPurchase
+import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.emojimerger.mixemojis.emojifun.R
 import com.emojimerger.mixemojis.emojifun.databinding.ActivitySettingsBinding
 
@@ -24,6 +31,12 @@ class SettingsActivity : BaseActivity() {
         binding = ActivitySettingsBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+        binding.settingsAdConatiner.visibility=View.GONE
+
+        if(isInternetAvailable()) {
+            binding.settingsAdConatiner.visibility=View.VISIBLE
+            loadNativeAd()
+        }
 
         binding.cardShareapp.setOnClickListener {
             shareApplication()
@@ -144,6 +157,78 @@ class SettingsActivity : BaseActivity() {
 //        startActivity(browserIntent)
 
         Toast.makeText(this, getString(R.string.commingSoon), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun loadNativeAd() {
+        EmojiKitchenApp.instance!!.getLoadedNativeAd() { appNative->
+            if (appNative == null  && !AppPurchase.getInstance().isPurchased) {
+//                printLog("preloaded_welcome_native", "Preloaded WelcomeNative is Null, New request is sent on WelcomeScreen")
+                AperoAd.getInstance().loadNativeAdResultCallback(this@SettingsActivity,
+                    BuildConfig.setting_native,
+                    R.layout.custom_native_with_media, object :
+                        AperoAdCallback(){
+                        override fun onNativeAdLoaded(nativeAd: ApNativeAd) {
+                            super.onNativeAdLoaded(nativeAd)
+                            binding.settingsAdConatiner.visibility = View.VISIBLE
+                            AperoAd.getInstance().populateNativeAdView(this@SettingsActivity, nativeAd, binding.settingsAdConatiner, binding.homeNative.shimmerContainerNative)
+                        }
+
+                        override fun onAdFailedToLoad(adError: ApAdError?) {
+                            super.onAdFailedToLoad(adError)
+                            binding.settingsAdConatiner.visibility = View.GONE
+                        }
+
+                        override fun onAdFailedToShow(adError: ApAdError?) {
+                            super.onAdFailedToShow(adError)
+                            binding.settingsAdConatiner.visibility = View.GONE
+                        }
+
+                        override fun onAdImpression() {
+                            super.onAdImpression()
+                        }
+                    })
+            }else{
+//                printLog("preloaded_welcome_native", "Preloaded WelcomeNative is Displayed")
+                binding.settingsAdConatiner.visibility = View.VISIBLE
+                AperoAd.getInstance().populateNativeAdView(
+                    this@SettingsActivity,
+                    appNative,
+                    binding.settingsAdConatiner,
+                    binding.homeNative.shimmerContainerNative)
+            }
+        }
+
+
+
+
+//        var savedNativeAd=EmojiKitchenApp.instance!!.getLoadedNativeAd()
+//        val fl_adplaceholder = binding.settingsAdConatiner
+//        val shimmerFrameLayout = binding.homeNative.shimmerContainerNative
+//
+//        AperoAd.getInstance().loadNativeAdResultCallback(
+//            this@SplashScreen,
+//            BuildConfig.native_ad,
+//            R.layout.custom_native_with_media,
+//            object :
+//                AperoAdCallback() {
+//
+//                override fun onNativeAdLoaded(nativeAd: ApNativeAd) {
+//                    super.onNativeAdLoaded(nativeAd)
+//                    AperoAd.getInstance().populateNativeAdView(
+//                        this@SplashScreen,
+//                        nativeAd,
+//                        fl_adplaceholder,
+//                        shimmerFrameLayout
+//                    )
+//                }
+//            })
+    }
+
+    private fun isInternetAvailable(): Boolean {
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
 
 }

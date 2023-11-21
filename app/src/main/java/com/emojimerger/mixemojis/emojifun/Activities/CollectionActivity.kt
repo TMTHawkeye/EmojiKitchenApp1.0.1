@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.ads.control.ads.AperoAd
+import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.emojimerger.mixemojis.emojifun.adapters.CollectionAdapter
 import com.emojimerger.mixemojis.emojifun.databinding.ActivityCollectionBinding
 import com.emojimerger.mixemojis.emojifun.repositories.emojisRepository
@@ -25,6 +27,7 @@ class CollectionActivity : BaseActivity() {
         binding = ActivityCollectionBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+        AperoAd.getInstance().loadBanner(this, BuildConfig.collection_activity_banner)
 
         initComponents()
 
@@ -55,5 +58,6 @@ class CollectionActivity : BaseActivity() {
         val repository = emojisRepository(this)
         viewModel =
             ViewModelProvider(this, MainViewModelFactory(repository)).get(MainViewModel::class.java)
+
     }
 }

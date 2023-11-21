@@ -9,6 +9,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.ads.control.ads.AperoAd
+import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.emojimerger.mixemojis.emojifun.R
 import com.emojimerger.mixemojis.emojifun.adapters.CreationAdapter
 import com.emojimerger.mixemojis.emojifun.databinding.ActivityMyCreationBinding
@@ -30,6 +32,8 @@ class MyCreationActivity :  BaseActivity() {
         binding = ActivityMyCreationBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+        AperoAd.getInstance().loadBanner(this, BuildConfig.my_creation_banner)
+
         initComponents()
 
         viewModel.getListOfFilesFromInternalStorage(getString(R.string.my_creationFolderName)) {

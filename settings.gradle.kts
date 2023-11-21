@@ -14,6 +14,20 @@ dependencyResolutionManagement {
         mavenCentral()
         maven("https://jitpack.io")
 
+        maven {
+            url = uri("https://artifactory.apero.vn/artifactory/gradle-release/")
+            credentials {
+                username = "ly-smartobject";
+                password = "smartobject@123";
+            }
+        }
+        maven {
+            url = uri("https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea");
+        }
+        maven {
+            url = uri("https://artifact.bytedance.com/repository/pangle");
+        }
+
     }
 }
 

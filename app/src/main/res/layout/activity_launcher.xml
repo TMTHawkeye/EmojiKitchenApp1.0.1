@@ -31,25 +31,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_moving"
-        android:layout_width="@dimen/_50sdp"
-        android:layout_height="@dimen/_50sdp"
-        android:layout_marginStart="@dimen/_5ssp"
-        app:lottie_rawRes="@raw/loading_splash"
-        app:layout_constraintBottom_toTopOf="@+id/progress_splash"
-        app:layout_constraintStart_toStartOf="parent"/>
 
-    <ProgressBar
-        android:layout_marginHorizontal="@dimen/_25ssp"
-        android:id="@+id/progress_splash"
-        style="@style/CustomProgressBar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_30sdp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_home"
-        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.iambedant.text.OutlineTextView
         android:id="@+id/loading_txt"
@@ -57,7 +39,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progress_splash"
+        app:layout_constraintTop_toBottomOf="@id/img_home"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/loading"
         android:layout_marginTop="@dimen/_10ssp"
         style="@style/textStyle"

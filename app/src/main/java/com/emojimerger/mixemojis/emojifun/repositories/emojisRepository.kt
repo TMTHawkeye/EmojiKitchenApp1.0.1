@@ -64,7 +64,7 @@ class emojisRepository(context: Activity) {
                     var fileUri=Uri.parse(imageDetails!!.fileUrl)
                     callback(
                         fileUri.toString(),
-                        imageDetails!!.fileName.split(".").first(),
+                        imageDetails.fileName.split(".").first(),
                         false
                     )
                     Log.d("TAG", "Image loaded from firebase: ${imageDetails.fileUrl}")
@@ -506,6 +506,8 @@ class emojisRepository(context: Activity) {
         val directory = File(mcontext!!.getExternalFilesDir("$folderName"), "")
         callback(directory.listFiles()?.toList() ?: emptyList())
     }
+
+
 
 
 //    fun zipEmojisFromFirebaseStorage(nameOfFolder:String,callback: (Boolean) -> Unit) {

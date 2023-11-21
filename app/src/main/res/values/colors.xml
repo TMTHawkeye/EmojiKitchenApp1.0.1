@@ -21,4 +21,7 @@
     <color name="light_grey">#EBEBEB</color>
     <color name="transparent">#00FFFFFF</color>
 
+    <color name="ad_bg_colorr">#E4E1E1</color>
+    <color name="gray_tc">#8A8888</color>
+
 </resources>

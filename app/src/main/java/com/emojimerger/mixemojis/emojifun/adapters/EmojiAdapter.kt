@@ -68,7 +68,6 @@ class EmojiAdapter(
                     holder.itemView.background=context.getDrawable(R.drawable.item_bg)
                 }
 
-
                 // Update the selected count
                 selectedCount += if (isSelected) 1 else -1
 

@@ -6,6 +6,8 @@ import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.ads.control.ads.AperoAd
+import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.emojimerger.mixemojis.emojifun.R
 import com.emojimerger.mixemojis.emojifun.adapters.CreationAdapter
 import com.emojimerger.mixemojis.emojifun.databinding.ActivityMyGifBinding
@@ -21,6 +23,7 @@ class MyGifActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMyGifBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        AperoAd.getInstance().loadBanner(this, BuildConfig.my_gif_screen_bannner)
 
         initComponents()
         viewModel.getListOfFilesFromInternalStorage(getString(R.string.my_created_gifs_folderName)){
@@ -48,5 +51,6 @@ class MyGifActivity : BaseActivity() {
         val repository = emojisRepository(this)
         viewModel =
             ViewModelProvider(this, MainViewModelFactory(repository)).get(MainViewModel::class.java)
+
     }
 }

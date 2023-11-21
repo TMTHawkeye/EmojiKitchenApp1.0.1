@@ -2,6 +2,7 @@ package com.emojimerger.mixemojis.emojifun.Activities
 
 import android.app.Dialog
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -9,6 +10,7 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -20,24 +22,34 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.ViewModelProvider
+import com.ads.control.ads.AperoAd
+import com.ads.control.ads.AperoAdCallback
+import com.ads.control.ads.wrapper.ApAdError
+import com.ads.control.ads.wrapper.ApNativeAd
+import com.ads.control.billing.AppPurchase
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.emojimerger.mixemojis.emojifun.R
 import com.emojimerger.mixemojis.emojifun.databinding.ActivityCreatedEmojiBinding
+import com.emojimerger.mixemojis.emojifun.databinding.CustomDialogEmojiNotFoundBinding
+import com.emojimerger.mixemojis.emojifun.databinding.CustomDialogLoadGifBinding
 import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.UIMethods.shadAnim
 import com.emojimerger.mixemojis.emojifun.modelClasses.fileDetails
 import com.emojimerger.mixemojis.emojifun.repositories.emojisRepository
 import com.emojimerger.mixemojis.emojifun.viewModelFactories.MainViewModelFactory
 import com.emojimerger.mixemojis.emojifun.viewmodels.MainViewModel
+import com.facebook.shimmer.ShimmerFrameLayout
 
 import com.iambedant.text.OutlineTextView
 import io.paperdb.Paper
@@ -73,6 +85,7 @@ class CreatedEmojiActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCreatedEmojiBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.settingsAdConatiner.visibility = View.INVISIBLE
 
         initComponents()
         receivedData()
@@ -105,6 +118,7 @@ class CreatedEmojiActivity : BaseActivity() {
                         loadingDialog.dismiss()
                         val noEmojiDialog = showNoEmojiFoundDialog()
                         noEmojiDialog.show()
+                        binding.settingsAdConatiner.visibility=View.INVISIBLE
                         val button_create_new =
                             noEmojiDialog.findViewById<RelativeLayout>(R.id.card_create_new)
                         button_create_new.setOnClickListener {
@@ -181,7 +195,7 @@ class CreatedEmojiActivity : BaseActivity() {
                     val bitmapDrawable = BitmapDrawable(resources, btmp)
                     viewModel.saveToFile(bitmapDrawable, fileName, state) { status, path ->
                         filePath = path
-                        fileName=path
+                        fileName = path
                     }
                     Glide.with(this).asBitmap().load(btmp).centerCrop()
                         .placeholder(R.drawable.progress_emoji).into(binding.createdEmojiId)
@@ -220,7 +234,7 @@ class CreatedEmojiActivity : BaseActivity() {
                         binding.createdEmojiId.setImageDrawable(drawable)
                     }
                 }
-                binding.createNewEmojiId.visibility = View.INVISIBLE
+                binding.createNewEmojiId.visibility = View.GONE
                 binding.linearNew.visibility = View.VISIBLE
                 binding.relativeItem.visibility = View.VISIBLE
             }
@@ -331,6 +345,14 @@ class CreatedEmojiActivity : BaseActivity() {
         val repository = emojisRepository(this)
         viewModel =
             ViewModelProvider(this, MainViewModelFactory(repository)).get(MainViewModel::class.java)
+
+        if (isInternetAvailable())
+            binding.settingsAdConatiner.visibility = View.VISIBLE
+
+        loadNativeAd(this@CreatedEmojiActivity, binding.settingsAdConatiner, binding.homeNative.shimmerContainerNative,
+            BuildConfig.new_emoji_native)
+
+
     }
 
     private fun shouldShowEmoji(shouldShow: Boolean) {
@@ -379,10 +401,11 @@ class CreatedEmojiActivity : BaseActivity() {
     }
 
     private fun showNoEmojiFoundDialog(): Dialog {
+        var binding=CustomDialogEmojiNotFoundBinding.inflate(layoutInflater)
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
-        dialog.setContentView(R.layout.custom_dialog_emoji_not_found)
+        dialog.setContentView(binding.root)
 
         val window: Window = dialog.window!!
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -393,10 +416,25 @@ class CreatedEmojiActivity : BaseActivity() {
     }
 
     private fun showLoadingDialog(): Dialog {
+        val binding = CustomDialogLoadGifBinding.inflate(layoutInflater)
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
-        dialog.setContentView(R.layout.custom_dialogemoji_loading)
+        dialog.setContentView(binding.root)
+        binding.settingsAdConatiner.visibility = View.INVISIBLE
+
+
+//        val fl_adplaceholder = dialog.findViewById<FrameLayout>(R.id.settingsAdConatiner)
+////        val shimmerFrameLayout = binding.homeNative.shimmerContainerNative
+//        val shimmerFrameLayout = dialog.findViewById<ShimmerFrameLayout>(R.id.shimmerContainerNative)
+        if (isInternetAvailable()) {
+            binding.settingsAdConatiner.visibility = View.VISIBLE
+            loadNativeAd(
+                this@CreatedEmojiActivity,
+                binding.settingsAdConatiner,
+                binding.homeNative.shimmerContainerNative,
+                BuildConfig.emoji_loading_dilog_native)
+        }
 
         val window: Window = dialog.window!!
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -410,7 +448,6 @@ class CreatedEmojiActivity : BaseActivity() {
             title.text = getString(R.string.emojiLoading)
         }
 
-
         val lottie_loading = dialog.findViewById<LottieAnimationView>(R.id.lottie_loading)
         lottie_loading.repeatCount = LottieDrawable.INFINITE
         lottie_loading.playAnimation()
@@ -422,16 +459,87 @@ class CreatedEmojiActivity : BaseActivity() {
         return dialog
     }
 
+    private fun loadNativeAd(
+        context: CreatedEmojiActivity,
+        fl_adplaceholder: FrameLayout,
+        shimmerFrameLayout: ShimmerFrameLayout,
+        adId:String) {
+        EmojiKitchenApp.instance!!.getLoadedNativeAd() { appNative ->
+            if (appNative == null && !AppPurchase.getInstance().isPurchased) {
+//                printLog("preloaded_welcome_native", "Preloaded WelcomeNative is Null, New request is sent on WelcomeScreen")
+                AperoAd.getInstance().loadNativeAdResultCallback(context,
+                    adId,
+                    R.layout.custom_native_with_media, object :
+                        AperoAdCallback() {
+                        override fun onNativeAdLoaded(nativeAd: ApNativeAd) {
+                            super.onNativeAdLoaded(nativeAd)
+                            fl_adplaceholder.visibility = View.VISIBLE
+                            AperoAd.getInstance().populateNativeAdView(
+                                context,
+                                nativeAd,
+                                fl_adplaceholder,
+                                shimmerFrameLayout
+                            )
+                        }
+
+                        override fun onAdFailedToLoad(adError: ApAdError?) {
+                            super.onAdFailedToLoad(adError)
+                            fl_adplaceholder.visibility = View.GONE
+                        }
+
+                        override fun onAdFailedToShow(adError: ApAdError?) {
+                            super.onAdFailedToShow(adError)
+                            fl_adplaceholder.visibility = View.GONE
+                        }
+
+                        override fun onAdImpression() {
+                            super.onAdImpression()
+                        }
+                    })
+            } else {
+//                printLog("preloaded_welcome_native", "Preloaded WelcomeNative is Displayed")
+                fl_adplaceholder.visibility = View.VISIBLE
+                AperoAd.getInstance().populateNativeAdView(
+                    context,
+                    appNative,
+                    fl_adplaceholder,
+                    shimmerFrameLayout
+                )
+            }
+        }
+    }
+
+    private fun isInternetAvailable(): Boolean {
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
+
     fun showGifLoadingDialog(): Dialog {
+        val binding = CustomDialogLoadGifBinding.inflate(layoutInflater)
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
-        dialog.setContentView(R.layout.custom_dialog_load_gif)
+        dialog.setContentView(binding.root)
+        binding.settingsAdConatiner.visibility = View.INVISIBLE
+
 
         val window: Window = dialog.window!!
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         window.setGravity(Gravity.CENTER)
+
+        if (isInternetAvailable()) {
+            binding.settingsAdConatiner.visibility = View.VISIBLE
+            loadNativeAd(
+                this@CreatedEmojiActivity,
+                binding.settingsAdConatiner,
+                binding.homeNative.shimmerContainerNative,
+                BuildConfig.create_gif_dilog_native
+            )
+        }
 
         val lottie_loading = dialog.findViewById<LottieAnimationView>(R.id.lottie_loading)
         lottie_loading.repeatCount = LottieDrawable.INFINITE

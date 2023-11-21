@@ -41,172 +41,207 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <ScrollView
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_190sdp"
-        android:layout_below="@+id/relative_tolbar">
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottie_movingLight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:alpha="0.2"
-            android:visibility="invisible"
-            app:lottie_rawRes="@raw/moving_light" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative_tolbar"
+        android:layout_above="@+id/settingsAdConatiner">
 
         <RelativeLayout
-            android:id="@+id/relative_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="@dimen/_5ssp"
-            android:layout_marginTop="@dimen/_5ssp"
-            android:layout_marginEnd="@dimen/_5ssp"
-            android:layout_marginBottom="@dimen/_5ssp"
-            android:background="@drawable/item_bg"
-            android:padding="@dimen/_20ssp"
-            android:visibility="invisible"
-            app:cardCornerRadius="@dimen/_5ssp">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/created_emoji_id"
-                android:layout_width="@dimen/_130sdp"
-                android:layout_height="@dimen/_130sdp"
+            <RelativeLayout
+                android:id="@+id/relative_image"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_190sdp">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottie_movingLight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:alpha="0.2"
+                    android:visibility="invisible"
+                    app:lottie_rawRes="@raw/moving_light" />
+
+                <RelativeLayout
+                    android:id="@+id/relative_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="@dimen/_5ssp"
+                    android:layout_marginTop="@dimen/_5ssp"
+                    android:layout_marginEnd="@dimen/_5ssp"
+                    android:layout_marginBottom="@dimen/_5ssp"
+                    android:background="@drawable/item_bg"
+                    android:padding="@dimen/_20ssp"
+                    android:visibility="invisible"
+                    app:cardCornerRadius="@dimen/_5ssp">
+
+                    <pl.droidsonroids.gif.GifImageView
+                        android:id="@+id/created_emoji_id"
+                        android:layout_width="@dimen/_130sdp"
+                        android:layout_height="@dimen/_130sdp"
+                        android:layout_centerInParent="true"
+                        android:background="@android:color/transparent" />
+                </RelativeLayout>
+
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottie_created"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:visibility="invisible"
+                    app:lottie_rawRes="@raw/new_emoji_creation_confetti" />
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_below="@+id/relative_image"
+                android:id="@+id/linear_new"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:background="@android:color/transparent" />
+                android:layout_marginBottom="@dimen/_10ssp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:padding="@dimen/_5ssp"
+                android:visibility="invisible">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constrain_dload"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_marginHorizontal="@dimen/_10ssp"
+                    android:background="@drawable/rounded_bg">
+
+                    <ImageView
+                        android:id="@+id/dload_emoji"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:src="@drawable/dload"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_favourite"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_marginHorizontal="@dimen/_10ssp"
+                    android:background="@drawable/rounded_bg">
+
+                    <ImageView
+                        android:id="@+id/add_fav_emoji"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:src="@drawable/add_fav"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constrain_share"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_marginHorizontal="@dimen/_10ssp"
+                    android:background="@drawable/rounded_bg">
+
+                    <ImageView
+                        android:id="@+id/share_emoji"
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:src="@drawable/share"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/create_new_emoji_id"
+                style="@style/buttonStyle"
+                android:layout_below="@id/linear_new"
+                android:layout_centerHorizontal="true"
+                android:layout_marginVertical="@dimen/_10ssp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/btn_bg" />
+
+                <TextView
+                    style="@style/textStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="@string/createNew" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/create_gif"
+                style="@style/buttonStyle"
+                android:layout_below="@id/create_new_emoji_id"
+                android:layout_centerHorizontal="true"
+                android:layout_marginVertical="@dimen/_10ssp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/btn_bg" />
+
+                <TextView
+                    style="@style/textStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="@string/createGif" />
+
+            </RelativeLayout>
         </RelativeLayout>
 
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:layout_centerHorizontal="true"
-            android:id="@+id/lottie_created"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible"
-            app:lottie_rawRes="@raw/new_emoji_creation_confetti" />
+    </ScrollView>
 
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/linear_new"
+    <FrameLayout
+        android:id="@+id/settingsAdConatiner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginVertical="@dimen/_10ssp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:padding="@dimen/_5ssp"
-        android:visibility="invisible">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="@dimen/_5ssp"
+        android:layout_marginBottom="@dimen/_5ssp"
+        android:visibility="visible"
+        app:backgroundTint="@null">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constrain_dload"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_50sdp"
-            android:layout_marginHorizontal="@dimen/_10ssp"
-            android:background="@drawable/rounded_bg">
-
-            <ImageView
-                android:id="@+id/dload_emoji"
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
-                android:src="@drawable/dload"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint_favourite"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_50sdp"
-            android:layout_marginHorizontal="@dimen/_10ssp"
-            android:background="@drawable/rounded_bg">
-
-            <ImageView
-                android:id="@+id/add_fav_emoji"
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
-                android:src="@drawable/add_fav"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constrain_share"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_50sdp"
-            android:layout_marginHorizontal="@dimen/_10ssp"
-            android:background="@drawable/rounded_bg">
-
-            <ImageView
-                android:id="@+id/share_emoji"
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
-                android:src="@drawable/share"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/create_new_emoji_id"
-        style="@style/buttonStyle"
-        android:layout_marginVertical="@dimen/_10ssp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_below="@id/linear_new"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone">
-
-
-    <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/btn_bg" />
-        <TextView
-            style="@style/textStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="@string/createNew" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/create_gif"
-        style="@style/buttonStyle"
-        android:layout_marginVertical="@dimen/_10ssp"
-        android:layout_below="@id/create_new_emoji_id"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/btn_bg" />
-        <TextView
-            style="@style/textStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="@string/createGif" />
-
-    </RelativeLayout>
+        <include
+            android:id="@+id/home_native"
+            layout="@layout/native_loading_with_media" />
+    </FrameLayout>
 
 
 </RelativeLayout>
