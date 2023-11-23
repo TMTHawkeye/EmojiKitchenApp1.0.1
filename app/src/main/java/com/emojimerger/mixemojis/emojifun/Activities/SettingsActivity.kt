@@ -15,6 +15,7 @@ import android.view.Window
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import com.ads.control.ads.AperoAd
 import com.ads.control.ads.AperoAdCallback
 import com.ads.control.ads.wrapper.ApAdError
@@ -23,6 +24,7 @@ import com.ads.control.billing.AppPurchase
 import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.emojimerger.mixemojis.emojifun.R
 import com.emojimerger.mixemojis.emojifun.databinding.ActivitySettingsBinding
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.isInternetAvailable
 
 class SettingsActivity : BaseActivity() {
     lateinit var binding: ActivitySettingsBinding
@@ -62,7 +64,16 @@ class SettingsActivity : BaseActivity() {
 
         binding.relativeBack.setOnClickListener {
             finish()
+            EmojiKitchenApp.instance!!.setLoadedNativeAd(null)
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                println("Back button pressed")
+                finish()
+                EmojiKitchenApp.instance!!.setLoadedNativeAd(null)
+            }
+        })
     }
 
     private fun shareApplication() {
@@ -133,22 +144,16 @@ class SettingsActivity : BaseActivity() {
 
     private fun feedBack(){
         val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:alawraqmarketing@gmail.com" +
-                    "feedbackemail") // Replace with your feedback email address
-            putExtra(Intent.EXTRA_SUBJECT, "Feedback for YourApp") // Replace with your email subject
+            data = Uri.parse("mailto:alawraqmarketing@gmail.com")
+            putExtra(Intent.EXTRA_SUBJECT, "Feedback for YourApp")
         }
         startActivity(Intent.createChooser(emailIntent, "Send feedback"))
-//        Toast.makeText(this, getString(R.string.commingSoon), Toast.LENGTH_SHORT).show()
-
     }
 
     private fun privacyPolicy(){
         val privacyPolicyUrl = "https://sites.google.com/view/alawraq-studio/home"
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(privacyPolicyUrl))
         startActivity(browserIntent)
-
-//        Toast.makeText(this, getString(R.string.commingSoon), Toast.LENGTH_SHORT).show()
-
     }
 
     private fun aboutUs(){
@@ -224,11 +229,6 @@ class SettingsActivity : BaseActivity() {
 //            })
     }
 
-    private fun isInternetAvailable(): Boolean {
-        val connectivityManager =
-            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetworkInfo = connectivityManager.activeNetworkInfo
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected
-    }
+
 
 }

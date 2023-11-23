@@ -135,7 +135,8 @@
         style="@style/buttonStyle"
         app:layout_constraintBottom_toTopOf="@+id/age_banner"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="@dimen/_10sdp">
 
 
         <!-- Text: Collection -->
@@ -154,15 +155,15 @@
 
     </RelativeLayout>
 
-    <include
+    <com.ads.control.ads.bannerAds.AperoBannerAdView
         android:id="@+id/age_banner"
-        layout="@layout/layout_banner_control"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_4sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"  />
+
 
     <ProgressBar
         android:id="@+id/progress_RV"

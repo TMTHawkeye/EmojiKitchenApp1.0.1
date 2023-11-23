@@ -22,7 +22,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/age_banner">
+        app:layout_constraintBottom_toTopOf="@+id/age_banner"
+        android:layout_marginBottom="@dimen/_10sdp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -68,14 +69,14 @@
             android:layout_marginTop="@dimen/_10ssp" />
     </LinearLayout>
 
-    <include
+    <com.ads.control.ads.bannerAds.AperoBannerAdView
         android:id="@+id/age_banner"
-        layout="@layout/layout_banner_control"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_4sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"  />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

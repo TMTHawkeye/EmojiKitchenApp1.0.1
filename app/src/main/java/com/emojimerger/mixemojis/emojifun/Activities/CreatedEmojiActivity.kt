@@ -92,6 +92,8 @@ class CreatedEmojiActivity : BaseActivity() {
         val splashTime = getString(R.string.loading_emoji_time).toLong()
         val loadingDialog = showLoadingDialog()
         loadingDialog.show()
+        loadNativeAd(this@CreatedEmojiActivity, binding.settingsAdConatiner, binding.homeNative.shimmerContainerNative,
+            BuildConfig.new_emoji_native)
 
         Log.d("TAG", "intent name is: $intentFrom")
         Log.d("TAG", "Emoji URL is: $emojiUrl")
@@ -315,11 +317,15 @@ class CreatedEmojiActivity : BaseActivity() {
 
         binding.shareEmoji.setOnClickListener {
             Log.d("TAG", "shareGif filepath: $filePath")
-
-            if (intentFrom.equals(getString(R.string.mygifs)) || intentFrom.equals(getString(R.string.createGif))) {
-                shareGif("gif")
-            } else {
-                shareGif("png")
+            if(filePath.isEmpty()||filePath.isBlank()){
+                Toast.makeText(this, "Can't share emoji right now!", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                if (intentFrom.equals(getString(R.string.mygifs)) || intentFrom.equals(getString(R.string.createGif))) {
+                    shareFile("gif", filePath)
+                } else {
+                    shareFile("png", filePath)
+                }
             }
         }
 
@@ -337,6 +343,7 @@ class CreatedEmojiActivity : BaseActivity() {
             override fun handleOnBackPressed() {
                 println("Back button pressed")
                 finish()
+                EmojiKitchenApp.instance!!.setLoadedNativeAd(null)
             }
         })
     }
@@ -348,9 +355,6 @@ class CreatedEmojiActivity : BaseActivity() {
 
         if (isInternetAvailable())
             binding.settingsAdConatiner.visibility = View.VISIBLE
-
-        loadNativeAd(this@CreatedEmojiActivity, binding.settingsAdConatiner, binding.homeNative.shimmerContainerNative,
-            BuildConfig.new_emoji_native)
 
 
     }
@@ -422,7 +426,7 @@ class CreatedEmojiActivity : BaseActivity() {
         dialog.setCancelable(false)
         dialog.setContentView(binding.root)
         binding.settingsAdConatiner.visibility = View.INVISIBLE
-
+        preLoadNativeForCreatedEmoji()
 
 //        val fl_adplaceholder = dialog.findViewById<FrameLayout>(R.id.settingsAdConatiner)
 ////        val shimmerFrameLayout = binding.homeNative.shimmerContainerNative
@@ -524,6 +528,7 @@ class CreatedEmojiActivity : BaseActivity() {
         dialog.setCancelable(false)
         dialog.setContentView(binding.root)
         binding.settingsAdConatiner.visibility = View.INVISIBLE
+        preLoadNativeForCreatedEmoji()
 
 
         val window: Window = dialog.window!!
@@ -601,8 +606,8 @@ class CreatedEmojiActivity : BaseActivity() {
         Handler(Looper.getMainLooper()).postDelayed(runnable, splashTime)
     }
 
-    fun shareGif(fileType: String) {
-        val file = File(filePath)
+    fun shareFile(fileType: String, pathFile:String) {
+        val file = File(pathFile)
         val shareIntent = Intent(Intent.ACTION_SEND)
         val photoURI: Uri? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // Use MediaStore for Android 10 (Q) and above
@@ -638,6 +643,28 @@ class CreatedEmojiActivity : BaseActivity() {
             .onFailure {
                 it.printStackTrace()
             }
+    }
+
+    fun preLoadNativeForCreatedEmoji() {
+        AperoAd.getInstance().loadNativeAdResultCallback(
+            this,
+            BuildConfig.new_emoji_native,
+            R.layout.custom_native_with_media,
+            object : AperoAdCallback() {
+                override fun onNativeAdLoaded(nativeAd: ApNativeAd) {
+                    super.onNativeAdLoaded(nativeAd)
+//                    EmojiKitchenApp.getApplication()?.getStorage()?.nativeAd4ContinueScreen?.postValue(nativeAd)
+                    EmojiKitchenApp.instance!!.setLoadedNativeAd(nativeAd)
+                }
+
+                override fun onAdFailedToLoad(adError: ApAdError?) {
+                    super.onAdFailedToLoad(adError)
+//                    EmojiKitchenApp.getApplication()?.getStorage()?.nativeAd4ContinueScreen?.postValue(null)
+                    EmojiKitchenApp.instance!!.setLoadedNativeAd(null)
+
+                }
+            }
+        )
     }
 
 

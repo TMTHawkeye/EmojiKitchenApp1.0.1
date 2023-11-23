@@ -21,20 +21,24 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
+import com.ads.control.admob.AppOpenManager
 import com.ads.control.ads.AperoAd
 import com.ads.control.ads.AperoAdCallback
 import com.ads.control.ads.wrapper.ApAdError
 import com.ads.control.ads.wrapper.ApInterstitialAd
 import com.ads.control.ads.wrapper.ApNativeAd
 import com.ads.control.billing.AppPurchase
+import com.ads.control.funtion.AdCallback
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.emojimerger.mixemojis.emojifun.R
 import com.emojimerger.mixemojis.emojifun.databinding.ActivityMainBinding
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.isInternetAvailable
 import com.emojimerger.mixemojis.emojifun.repositories.emojisRepository
 import com.emojimerger.mixemojis.emojifun.viewModelFactories.MainViewModelFactory
 import com.emojimerger.mixemojis.emojifun.viewmodels.MainViewModel
+import com.google.android.gms.ads.AdError
 import io.paperdb.Paper
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -45,6 +49,11 @@ class MainActivity : BaseActivity() {
     lateinit var animation: Animation
     private lateinit var viewModel: MainViewModel
     var mInterstitialAd: ApInterstitialAd? = null
+
+    private val TIMEOUT_SPLASH = 30000
+    private val TIME_DELAY_SPLASH = 2000
+
+    private val typeAdsSplash = "inter"
 
     var mExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     var mHandler = Handler(Looper.getMainLooper())
@@ -232,7 +241,6 @@ class MainActivity : BaseActivity() {
         val repository = emojisRepository(this)
         viewModel =
             ViewModelProvider(this, MainViewModelFactory(repository)).get(MainViewModel::class.java)
-        Paper.init(this);
 
 //        viewModel.zipEmojisFromFirebaseStorage() {
 //            if (it) {
@@ -322,20 +330,7 @@ class MainActivity : BaseActivity() {
     }
 
 
-    private fun isInternetAvailable(): Boolean {
-        val connectivityManager =
-            getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        val network = connectivityManager.activeNetwork
-        val capabilities = connectivityManager.getNetworkCapabilities(network)
-
-        // Check if the internet is available and the device is connected
-        return capabilities != null && (
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
-                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
-                )
-    }
 
     private fun loadInterCreate() {
         mInterstitialAd =
@@ -365,10 +360,10 @@ class MainActivity : BaseActivity() {
     }
 
 
-//    override fun onResume() {
-//        super.onResume()
-//        EmojiKitchenApp.instance!!.setLoadedNativeAd(null)
-//    }
+    override fun onResume() {
+        super.onResume()
+        preLoadNativeForSettings()
+    }
 
 
 

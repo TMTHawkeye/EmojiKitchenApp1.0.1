@@ -67,7 +67,7 @@ class LauncherActivity : BaseActivity() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 println("Back button pressed")
-//                handler.removeCallbacks(runnable!!)
+                handler.removeCallbacks(runnable!!)
 
                 finishAffinity()
             }

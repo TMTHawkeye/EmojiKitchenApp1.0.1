@@ -44,7 +44,7 @@
         android:text="@string/loading"
         android:layout_marginTop="@dimen/_10ssp"
         style="@style/textStyle"
-        android:textSize="@dimen/_10ssp"
+        android:textSize="@dimen/_15ssp"
         android:textColor="@color/white"
         app:outlineColor="@color/black"
         app:outlineWidth="0.1" />

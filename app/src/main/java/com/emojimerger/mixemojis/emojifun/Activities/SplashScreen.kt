@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.ads.control.admob.AppOpenManager
 import com.airbnb.lottie.LottieDrawable
 import com.emojimerger.mixemojis.emojifun.R
@@ -27,19 +28,23 @@ import com.ads.control.funtion.AdCallback
 import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.LoadAdError
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 class SplashScreen : BaseActivity() {
     lateinit var binding: ActivitySplashScreenBinding
     private var isFirstRunApp = true
-//    private val typeAdsSplash = "app_open_start"
+
+    //    private val typeAdsSplash = "app_open_start"
     private val TIMEOUT_SPLASH = 30000
-    private val TIME_DELAY_SPLASH = 2000
+    private val TIME_DELAY_SPLASH = 20
 
     private val typeAdsSplash = "inter"
     private var progressStatus = 0
     val executor = Executors.newSingleThreadExecutor()
-    var runnable:Runnable?=null
+    var runnable: Runnable? = null
     val handler = Handler(Looper.getMainLooper())
 
 
@@ -49,10 +54,6 @@ class SplashScreen : BaseActivity() {
         setContentView(binding.root)
 
         preLoadNativeForMain()
-//        loadAdsSplash()
-
-//        val splashTime = getString(R.string.splashTime).toLong()
-
 
         binding.lottieMovinglight.repeatCount = LottieDrawable.INFINITE
         binding.lottieMovinglight.playAnimation()
@@ -80,26 +81,27 @@ class SplashScreen : BaseActivity() {
         val splashTime = getString(R.string.splashTime).toLong()
 
         runnable = Runnable {
-//            startActivity(Intent(this,SplashScreen::class.java))
-            binding.cardLetsStart.visibility=View.VISIBLE
-            binding.progressSplash.visibility=View.INVISIBLE
-            binding.lottieMoving.visibility=View.INVISIBLE
-//            finish()
+            binding.progressSplash.visibility = View.INVISIBLE
+            binding.lottieMoving.visibility = View.INVISIBLE
+
+            if (isReadStorageAllowed() && isWriteStorageAllowed()) {
+                loadAdsSplash()
+
+            }
+            else{
+                binding.cardLetsStart.visibility = View.VISIBLE
+            }
         }
         handler.postDelayed(runnable!!, splashTime)
 
         binding.cardLetsStart.setOnClickListener {
-            // Check if the permission has already been granted
-            if (isReadStorageAllowed() && isWriteStorageAllowed()) {
-//                lifecycleScope.launch(Dispatchers.IO) {
-                    // Permission is already granted
+            lifecycleScope.launch(Dispatchers.IO) {
+                // Permission is already granted
+                runOnUiThread {
                     loadAdsSplash()
-//                }
-
-            } else {
-                // Request permission
-                requestStoragePermission()
+                }
             }
+
         }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -113,7 +115,6 @@ class SplashScreen : BaseActivity() {
             binding.imgHome.visibility = View.VISIBLE
             binding.settingsAdConatiner.visibility = View.GONE
         } else {
-
             loadNativeAd()
         }
     }
@@ -160,8 +161,11 @@ class SplashScreen : BaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == getString(R.string.storagePermissionCode).toInt()) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                binding.cardLetsStart.visibility=View.INVISIBLE
                 // Permission is granted, start the MainActivity
-                loadAdsSplash()
+                startActivity(Intent(this@SplashScreen, MainActivity::class.java))
+
+
             } else {
                 // Permissions are denied
                 if (shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -225,7 +229,6 @@ class SplashScreen : BaseActivity() {
                 )
             }
         }
-
     }
 
     private fun openAppSettings() {
@@ -272,71 +275,6 @@ class SplashScreen : BaseActivity() {
     }
 
 
-    override fun onResume() {
-        super.onResume()
-//        if (isFirstRunApp) {
-//            isFirstRunApp = false
-//            return
-//        }
-        if (typeAdsSplash == "inter") {
-            AperoAd.getInstance().onCheckShowSplashWhenFail(this, object : AperoAdCallback() {
-                override fun onAdFailedToShow(adError: ApAdError?) {
-                    super.onAdFailedToShow(adError)
-                    if (isDestroyed || isFinishing) return
-                    EmojiKitchenApp.getApplication()?.isSplashAdClosed?.postValue(true)
-                }
-
-                override fun onNextAction() {
-                    super.onNextAction()
-                    if (isDestroyed || isFinishing) return
-                    startActivity(Intent(this@SplashScreen, MainActivity::class.java))
-
-//                    navigateToNextScreen()
-                }
-
-                override fun onAdClosed() {
-                    super.onAdClosed()
-                    if (isDestroyed || isFinishing) return
-                    EmojiKitchenApp.getApplication()?.isSplashAdClosed?.postValue(true)
-
-                }
-            }, 1000)
-        } else {
-            AppOpenManager.getInstance().onCheckShowAppOpenSplashWhenFail(
-                this,
-                object : AdCallback() {
-                    override fun onNextAction() {
-                        super.onNextAction()
-                        if (isDestroyed || isFinishing) return
-//                        startActivity(Intent(this@SplashScreen, MainActivity::class.java))
-
-//                        navigateToNextScreen()
-                    }
-
-                    override fun onAdFailedToShow(adError: AdError?) {
-                        super.onAdFailedToShow(adError)
-                        if (isDestroyed || isFinishing) return
-                        EmojiKitchenApp.getApplication()?.isSplashAdClosed?.postValue(true)
-//                        startActivity(Intent(this@SplashScreen, MainActivity::class.java))
-
-//                        navigateToNextScreen()
-                    }
-
-                    override fun onAdClosed() {
-                        super.onAdClosed()
-                        if (isDestroyed || isFinishing) return
-                        EmojiKitchenApp.getApplication()?.isSplashAdClosed?.postValue(true)
-//                        startActivity(Intent(this@SplashScreen, MainActivity::class.java))
-
-//                        navigateToNextScreen()
-                    }
-                },
-                1000
-            )
-        }
-    }
-
-
     private fun loadAdsSplash() {
         if (AppPurchase.getInstance().isPurchased) {
             EmojiKitchenApp.getApplication()?.isSplashAdClosed?.postValue(true)
@@ -363,7 +301,7 @@ class SplashScreen : BaseActivity() {
                             super.onNextAction()
                             if (isDestroyed || isFinishing) return
                             EmojiKitchenApp.getApplication()?.isSplashAdClosed?.postValue(true)
-                            startActivity(Intent(this@SplashScreen, MainActivity::class.java))
+//                            startActivity(Intent(this@SplashScreen, MainActivity::class.java))
 
 //                            navigateToNextScreen()
                         }
@@ -422,7 +360,7 @@ class SplashScreen : BaseActivity() {
             override fun onNextAction() {
                 super.onNextAction()
                 if (isDestroyed || isFinishing) return
-                startActivity(Intent(this@SplashScreen, MainActivity::class.java))
+//                startActivity(Intent(this@SplashScreen, MainActivity::class.java))
 
 //                navigateToNextScreen()
             }
@@ -431,6 +369,15 @@ class SplashScreen : BaseActivity() {
                 super.onAdClosed()
                 if (isDestroyed || isFinishing) return
                 EmojiKitchenApp.getApplication()?.isSplashAdClosed?.postValue(true)
+
+                // Check if the permission has already been granted
+                if (isReadStorageAllowed() && isWriteStorageAllowed()) {
+                    startActivity(Intent(this@SplashScreen, MainActivity::class.java))
+
+                } else {
+                    // Request permission
+                    requestStoragePermission()
+                }
 
             }
         })

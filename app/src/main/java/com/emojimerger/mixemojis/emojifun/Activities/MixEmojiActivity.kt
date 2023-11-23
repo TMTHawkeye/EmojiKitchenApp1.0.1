@@ -24,6 +24,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ads.control.ads.AperoAd
+import com.ads.control.ads.AperoAdCallback
+import com.ads.control.ads.wrapper.ApAdError
+import com.ads.control.ads.wrapper.ApNativeAd
 import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.emojimerger.mixemojis.emojifun.R
 import com.emojimerger.mixemojis.emojifun.adapters.EmojiAdapter
@@ -53,8 +56,9 @@ class MixEmojiActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMixEmojiBinding.inflate(layoutInflater)
 
-         setContentView(binding.root)
+        setContentView(binding.root)
         AperoAd.getInstance().loadBanner(this, BuildConfig.mix_emoji_banner)
+        preLoadNativeForloadingEmoji()
 
         mExecutor.execute {
             initComponents()
@@ -93,7 +97,6 @@ class MixEmojiActivity : BaseActivity() {
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadein);
 
 
-
     }
 
     override fun onPause() {
@@ -101,6 +104,7 @@ class MixEmojiActivity : BaseActivity() {
         binding.emoji1Img.setImageDrawable(null)
         binding.emoji2Img.setImageDrawable(null)
     }
+
     private fun saveKeyToPaperDb(key: String, value: String) {
         Paper.book().write("$key", value);
     }
@@ -219,7 +223,30 @@ class MixEmojiActivity : BaseActivity() {
         binding.progressImg.visibility = View.GONE
         binding.emojiRV.visibility = View.VISIBLE
         binding.btnMerge.visibility = View.VISIBLE
+        preLoadNativeForloadingEmoji()
 
+    }
+
+    fun preLoadNativeForloadingEmoji() {
+        AperoAd.getInstance().loadNativeAdResultCallback(
+            this,
+            BuildConfig.emoji_loading_dilog_native,
+            R.layout.custom_native_with_media,
+            object : AperoAdCallback() {
+                override fun onNativeAdLoaded(nativeAd: ApNativeAd) {
+                    super.onNativeAdLoaded(nativeAd)
+//                    EmojiKitchenApp.getApplication()?.getStorage()?.nativeAd4ContinueScreen?.postValue(nativeAd)
+                    EmojiKitchenApp.instance!!.setLoadedNativeAd(nativeAd)
+                }
+
+                override fun onAdFailedToLoad(adError: ApAdError?) {
+                    super.onAdFailedToLoad(adError)
+//                    EmojiKitchenApp.getApplication()?.getStorage()?.nativeAd4ContinueScreen?.postValue(null)
+                    EmojiKitchenApp.instance!!.setLoadedNativeAd(null)
+
+                }
+            }
+        )
     }
 
 

@@ -9,6 +9,7 @@ import com.ads.control.application.AdsMultiDexApplication
 import com.ads.control.config.AdjustConfig
 import com.ads.control.config.AperoAdConfig
 import com.emojimerger.mixemojis.emojifun.BuildConfig
+import io.paperdb.Paper
 
 class EmojiKitchenApp : AdsMultiDexApplication(){
 
@@ -52,6 +53,7 @@ class EmojiKitchenApp : AdsMultiDexApplication(){
     override fun onCreate() {
         super.onCreate()
         instance = this
+        Paper.init(this);
 
         adsInit()
         AppOpenManager.getInstance().disableAppResumeWithActivity(EmojiKitchenApp::class.java)
@@ -82,7 +84,6 @@ class EmojiKitchenApp : AdsMultiDexApplication(){
 
         // Optional: setup list device test - recommended to use
 //        listTestDevice.add("EC25F576DA9B6CE74778B268CB87E431")
-        aperoAdConfig.listDeviceTest = listTestDevice
 
         AperoAd.getInstance().init(this, aperoAdConfig, false)
 

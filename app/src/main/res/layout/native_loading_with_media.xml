@@ -4,10 +4,8 @@
     app:shimmer_auto_start="true"
     android:id="@+id/shimmerContainerNative"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     app:shimmer_base_color="#ccc">
-
-
 
     <RelativeLayout
         android:id="@+id/ad_unit_content"
