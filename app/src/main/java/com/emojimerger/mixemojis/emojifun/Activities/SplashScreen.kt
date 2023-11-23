@@ -87,8 +87,7 @@ class SplashScreen : BaseActivity() {
             if (isReadStorageAllowed() && isWriteStorageAllowed()) {
                 loadAdsSplash()
 
-            }
-            else{
+            } else {
                 binding.cardLetsStart.visibility = View.VISIBLE
             }
         }
@@ -161,7 +160,7 @@ class SplashScreen : BaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == getString(R.string.storagePermissionCode).toInt()) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                binding.cardLetsStart.visibility=View.INVISIBLE
+                binding.cardLetsStart.visibility = View.INVISIBLE
                 // Permission is granted, start the MainActivity
                 startActivity(Intent(this@SplashScreen, MainActivity::class.java))
 
@@ -295,6 +294,8 @@ class SplashScreen : BaseActivity() {
                             super.onAdFailedToLoad(adError)
                             if (isDestroyed || isFinishing) return
                             EmojiKitchenApp.getApplication()?.isSplashAdClosed?.postValue(true)
+                            startActivity(Intent(this@SplashScreen, MainActivity::class.java))
+
                         }
 
                         override fun onNextAction() {
@@ -355,6 +356,7 @@ class SplashScreen : BaseActivity() {
                 super.onAdFailedToShow(adError)
                 if (isDestroyed || isFinishing) return
                 EmojiKitchenApp.getApplication()?.isSplashAdClosed?.postValue(true)
+                startActivity(Intent(this@SplashScreen, MainActivity::class.java))
             }
 
             override fun onNextAction() {

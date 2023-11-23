@@ -1,5 +1,6 @@
 package com.emojimerger.mixemojis.emojifun.Activities
 
+import android.app.Activity
 import androidx.lifecycle.MutableLiveData
 import com.ads.control.admob.Admob
 import com.ads.control.admob.AppOpenManager
@@ -9,16 +10,13 @@ import com.ads.control.application.AdsMultiDexApplication
 import com.ads.control.config.AdjustConfig
 import com.ads.control.config.AperoAdConfig
 import com.emojimerger.mixemojis.emojifun.BuildConfig
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.GDPRUtil
+import com.google.android.ump.ConsentInformation
 import io.paperdb.Paper
 
 class EmojiKitchenApp : AdsMultiDexApplication(){
 
     private val context: EmojiKitchenApp? = null
-
-    /* fun getApplication(): EmojiKitchenApp? {
-         return context
-     }*/
-
 
     private var loadedNativeAd: ApNativeAd? = null
     private var loadedBannerAd: AperoAd? = null
@@ -55,10 +53,13 @@ class EmojiKitchenApp : AdsMultiDexApplication(){
         instance = this
         Paper.init(this);
 
+
         adsInit()
         AppOpenManager.getInstance().disableAppResumeWithActivity(EmojiKitchenApp::class.java)
         Admob.getInstance().setNumToShowAds(0)
         AperoAd.getInstance().setCountClickToShowAds(2)
+
+
     }
 
 

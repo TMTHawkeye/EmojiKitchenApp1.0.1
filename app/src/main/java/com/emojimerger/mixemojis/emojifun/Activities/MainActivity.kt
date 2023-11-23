@@ -34,6 +34,7 @@ import com.airbnb.lottie.LottieDrawable
 import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.emojimerger.mixemojis.emojifun.R
 import com.emojimerger.mixemojis.emojifun.databinding.ActivityMainBinding
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.GDPRUtil
 import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.isInternetAvailable
 import com.emojimerger.mixemojis.emojifun.repositories.emojisRepository
 import com.emojimerger.mixemojis.emojifun.viewModelFactories.MainViewModelFactory
@@ -50,10 +51,6 @@ class MainActivity : BaseActivity() {
     private lateinit var viewModel: MainViewModel
     var mInterstitialAd: ApInterstitialAd? = null
 
-    private val TIMEOUT_SPLASH = 30000
-    private val TIME_DELAY_SPLASH = 2000
-
-    private val typeAdsSplash = "inter"
 
     var mExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     var mHandler = Handler(Looper.getMainLooper())
@@ -226,6 +223,7 @@ class MainActivity : BaseActivity() {
         lottie.repeatCount = LottieDrawable.INFINITE
         lottie.playAnimation()
         exitBtn.setOnClickListener {
+
             finishAffinity()
         }
 

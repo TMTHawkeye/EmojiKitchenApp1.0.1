@@ -74,6 +74,7 @@ class CreatedEmojiActivity : BaseActivity() {
     lateinit var databaseKey1: String
     lateinit var databaseKey2: String
     private var isFineToUseListeners = false
+    private var isAlreadyDloaded = false
     lateinit var filePath: String
 
 
@@ -264,35 +265,43 @@ class CreatedEmojiActivity : BaseActivity() {
 
 
         binding.dloadEmoji.setOnClickListener {
-            val file = File(filePath)
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            val photoURI: Uri? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // Use MediaStore for Android 10 (Q) and above
-                val resolver = applicationContext.contentResolver
-                val contentValues = ContentValues()
-                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
-                contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
-                val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                val imageUri = resolver.insert(contentUri, contentValues)
+            if(!isAlreadyDloaded) {
+                isAlreadyDloaded=true
+                val file = File(filePath)
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    // Use MediaStore for Android 10 (Q) and above
+                    val resolver = applicationContext.contentResolver
+                    val contentValues = ContentValues()
+                    contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
+                    contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+                    val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                    val imageUri = resolver.insert(contentUri, contentValues)
 
-                if (imageUri != null) {
-                    val outputStream = resolver.openOutputStream(imageUri)
-                    outputStream.use { output ->
-                        val inputStream = FileInputStream(file)
-                        inputStream.use { input ->
-                            input.copyTo(output!!)
+                    if (imageUri != null) {
+                        val outputStream = resolver.openOutputStream(imageUri)
+                        outputStream.use { output ->
+                            val inputStream = FileInputStream(file)
+                            inputStream.use { input ->
+                                input.copyTo(output!!)
+                            }
                         }
                     }
+                    imageUri
+                } else {
+                    // For Android 9 and below, use FileProvider
+                    val authority = applicationContext.packageName + ".provider"
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    FileProvider.getUriForFile(applicationContext, authority, file)
                 }
-                imageUri
-            } else {
-                // For Android 9 and below, use FileProvider
-                val authority = applicationContext.packageName + ".provider"
-                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                FileProvider.getUriForFile(applicationContext, authority, file)
-            }
 
-            Toast.makeText(this, getString(R.string.savedToGalleryToast), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.savedToGalleryToast), Toast.LENGTH_SHORT)
+                    .show()
+            }
+            else{
+                Toast.makeText(this, getString(R.string.alreadysavedToast), Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
 
         binding.addFavEmoji.setOnClickListener {
@@ -355,7 +364,6 @@ class CreatedEmojiActivity : BaseActivity() {
 
         if (isInternetAvailable())
             binding.settingsAdConatiner.visibility = View.VISIBLE
-
 
     }
 

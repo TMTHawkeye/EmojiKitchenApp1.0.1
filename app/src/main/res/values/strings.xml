@@ -61,6 +61,7 @@ our app?</string>
     <string name="emojinotCreated">Emoji not created, an
 error occured</string>
     <string name="savedToGalleryToast">Emoji have been saved to gallery!</string>
+    <string name="alreadysavedToast">Emoji have already been saved!</string>
     <string name="addToFavouritesToast">Emoji have been added to Favourites!</string>
     <string name="removeFromFavouritesToast">Emoji have been removed from Favourites</string>
     <string name="exit_app_text">Do you really want to exit this app?</string>

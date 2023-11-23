@@ -191,6 +191,8 @@ dependencies {
 
     //ads implementation
     implementation ("apero-inhouse:apero-ads:1.10.0-snapshot14")
+    //admob gdpr
+    implementation ("com.google.android.ump:user-messaging-platform:2.1.0")
 
 
 
