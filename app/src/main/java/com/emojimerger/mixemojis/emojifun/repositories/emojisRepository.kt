@@ -61,9 +61,9 @@ class emojisRepository(context: Activity) {
                     // Key1 exists in the database
                     val imageDetails =
                         dataSnapshot.child(databaseKey1).getValue(emojiDetails::class.java)
-                    var fileUri=Uri.parse(imageDetails!!.fileUrl)
+//                    var fileUri=imageDetails!!.fileUrl
                     callback(
-                        fileUri.toString(),
+                        imageDetails!!.fileUrl,
                         imageDetails.fileName.split(".").first(),
                         false
                     )
@@ -75,9 +75,9 @@ class emojisRepository(context: Activity) {
                     // Key2 exists in the database
                     val imageDetails =
                         dataSnapshot.child(databaseKey2).getValue(emojiDetails::class.java)
-                    var fileUri=Uri.parse(imageDetails!!.fileUrl)
+//                    var fileUri=imageDetails!!.fileUrl
                     callback(
-                        fileUri.toString(),
+                        imageDetails!!.fileUrl,
                         imageDetails.fileName.split(".").first(),
                         false
                     )

@@ -159,6 +159,7 @@ dependencies {
 
     //glide library
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     //sdp and ssp library
     implementation("com.intuit.ssp:ssp-android:1.1.0")

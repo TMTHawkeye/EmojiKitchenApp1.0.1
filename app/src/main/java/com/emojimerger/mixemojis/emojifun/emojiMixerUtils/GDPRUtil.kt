@@ -13,6 +13,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 class GDPRUtil(var activity: Activity) {
     private var isMobileAdsInitializeCalled = AtomicBoolean(false)
 
+
+
     var TAG="GDPR_TAG"
 
     fun setGdpr(){
@@ -83,5 +85,7 @@ class GDPRUtil(var activity: Activity) {
         MobileAds.initialize(activity)
 
     }
+
+
 
 }

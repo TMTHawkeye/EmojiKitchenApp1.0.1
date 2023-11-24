@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.ads.control.admob.Admob
 import com.ads.control.admob.AppOpenManager
 import com.ads.control.ads.AperoAd
+import com.ads.control.ads.wrapper.ApInterstitialAd
 import com.ads.control.ads.wrapper.ApNativeAd
 import com.ads.control.application.AdsMultiDexApplication
 import com.ads.control.config.AdjustConfig
@@ -16,7 +17,9 @@ import io.paperdb.Paper
 
 class EmojiKitchenApp : AdsMultiDexApplication(){
 
-    private val context: EmojiKitchenApp? = null
+//    private val context: EmojiKitchenApp? = null
+
+    var inters4WelcomeScreen: ApInterstitialAd? = null
 
     private var loadedNativeAd: ApNativeAd? = null
     private var loadedBannerAd: AperoAd? = null
@@ -53,15 +56,11 @@ class EmojiKitchenApp : AdsMultiDexApplication(){
         instance = this
         Paper.init(this);
 
-
         adsInit()
-        AppOpenManager.getInstance().disableAppResumeWithActivity(EmojiKitchenApp::class.java)
+        AppOpenManager.getInstance().disableAppResumeWithActivity(LauncherActivity::class.java)
         Admob.getInstance().setNumToShowAds(0)
         AperoAd.getInstance().setCountClickToShowAds(2)
-
-
     }
-
 
     fun adsInit() {
 

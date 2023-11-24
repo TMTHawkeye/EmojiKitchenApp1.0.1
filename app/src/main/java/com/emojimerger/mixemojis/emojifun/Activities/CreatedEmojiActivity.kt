@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -37,7 +38,9 @@ import com.ads.control.billing.AppPurchase
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.emojimerger.mixemojis.emojifun.R
@@ -45,6 +48,10 @@ import com.emojimerger.mixemojis.emojifun.databinding.ActivityCreatedEmojiBindin
 import com.emojimerger.mixemojis.emojifun.databinding.CustomDialogEmojiNotFoundBinding
 import com.emojimerger.mixemojis.emojifun.databinding.CustomDialogLoadGifBinding
 import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.UIMethods.shadAnim
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.isReadStorageAllowed
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.isWriteStorageAllowed
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.openAppSettings
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.requestStoragePermission
 import com.emojimerger.mixemojis.emojifun.modelClasses.fileDetails
 import com.emojimerger.mixemojis.emojifun.repositories.emojisRepository
 import com.emojimerger.mixemojis.emojifun.viewModelFactories.MainViewModelFactory
@@ -102,8 +109,8 @@ class CreatedEmojiActivity : BaseActivity() {
         val runnable = Runnable {
             //intent from mix emojis
             if (intentFrom.equals(getString(R.string.mixEmojis))) {
-                // Load the image with the created Target
-                Glide.with(this).load(emojiUrl).into(object : CustomTarget<Drawable>() {
+                Glide.with(this).asDrawable().load(emojiUrl)
+                    .into(object : CustomTarget<Drawable>() {
 
                     override fun onStart() {
                     }
@@ -118,6 +125,7 @@ class CreatedEmojiActivity : BaseActivity() {
                     }
 
                     override fun onLoadFailed(errorDrawable: Drawable?) {
+//                        Glide.with(this@CreatedEmojiActivity).load(emojiUrl).into(binding.createdEmojiId)
                         loadingDialog.dismiss()
                         val noEmojiDialog = showNoEmojiFoundDialog()
                         noEmojiDialog.show()
@@ -266,37 +274,43 @@ class CreatedEmojiActivity : BaseActivity() {
 
         binding.dloadEmoji.setOnClickListener {
             if(!isAlreadyDloaded) {
-                isAlreadyDloaded=true
-                val file = File(filePath)
-                val shareIntent = Intent(Intent.ACTION_SEND)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    // Use MediaStore for Android 10 (Q) and above
-                    val resolver = applicationContext.contentResolver
-                    val contentValues = ContentValues()
-                    contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
-                    contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
-                    val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                    val imageUri = resolver.insert(contentUri, contentValues)
+                if (!isReadStorageAllowed(this@CreatedEmojiActivity) && !isWriteStorageAllowed(this@CreatedEmojiActivity)) {
+                    requestStoragePermission(this)
+                }
+                else{
+                    isAlreadyDloaded=true
+                    val file = File(filePath)
+                    val shareIntent = Intent(Intent.ACTION_SEND)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        // Use MediaStore for Android 10 (Q) and above
+                        val resolver = applicationContext.contentResolver
+                        val contentValues = ContentValues()
+                        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
+                        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+                        val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                        val imageUri = resolver.insert(contentUri, contentValues)
 
-                    if (imageUri != null) {
-                        val outputStream = resolver.openOutputStream(imageUri)
-                        outputStream.use { output ->
-                            val inputStream = FileInputStream(file)
-                            inputStream.use { input ->
-                                input.copyTo(output!!)
+                        if (imageUri != null) {
+                            val outputStream = resolver.openOutputStream(imageUri)
+                            outputStream.use { output ->
+                                val inputStream = FileInputStream(file)
+                                inputStream.use { input ->
+                                    input.copyTo(output!!)
+                                }
                             }
                         }
+                        imageUri
+                    } else {
+                        // For Android 9 and below, use FileProvider
+                        val authority = applicationContext.packageName + ".provider"
+                        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        FileProvider.getUriForFile(applicationContext, authority, file)
                     }
-                    imageUri
-                } else {
-                    // For Android 9 and below, use FileProvider
-                    val authority = applicationContext.packageName + ".provider"
-                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    FileProvider.getUriForFile(applicationContext, authority, file)
+
+                    Toast.makeText(this, getString(R.string.savedToGalleryToast), Toast.LENGTH_SHORT)
+                        .show()
                 }
 
-                Toast.makeText(this, getString(R.string.savedToGalleryToast), Toast.LENGTH_SHORT)
-                    .show()
             }
             else{
                 Toast.makeText(this, getString(R.string.alreadysavedToast), Toast.LENGTH_SHORT)
@@ -675,5 +689,67 @@ class CreatedEmojiActivity : BaseActivity() {
         )
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == getString(R.string.storagePermissionCode).toInt()) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                binding.cardLetsStart.visibility = View.INVISIBLE
+                // Permission is granted, start the MainActivity
+//                onGranted()
+//                startActivity(Intent(this@SplashScreen, MainActivity::class.java))
+
+                isAlreadyDloaded=true
+                val file = File(filePath)
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    // Use MediaStore for Android 10 (Q) and above
+                    val resolver = applicationContext.contentResolver
+                    val contentValues = ContentValues()
+                    contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
+                    contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/png")
+                    val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                    val imageUri = resolver.insert(contentUri, contentValues)
+
+                    if (imageUri != null) {
+                        val outputStream = resolver.openOutputStream(imageUri)
+                        outputStream.use { output ->
+                            val inputStream = FileInputStream(file)
+                            inputStream.use { input ->
+                                input.copyTo(output!!)
+                            }
+                        }
+                    }
+                    imageUri
+                } else {
+                    // For Android 9 and below, use FileProvider
+                    val authority = applicationContext.packageName + ".provider"
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    FileProvider.getUriForFile(applicationContext, authority, file)
+                }
+
+                Toast.makeText(this, getString(R.string.savedToGalleryToast), Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                // Permissions are denied
+                if (shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                    && shouldShowRequestPermissionRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                ) {
+                    // User denied permissions, show rationale and request again
+                    Toast.makeText(
+                        this,
+                        getString(R.string.allowStoragePermToast),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    // User denied permissions and selected "Don't ask again"
+                    openAppSettings(this@CreatedEmojiActivity)
+                }
+            }
+        }
+    }
 
 }

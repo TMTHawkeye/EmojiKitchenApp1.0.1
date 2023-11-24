@@ -31,6 +31,7 @@ import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.emojimerger.mixemojis.emojifun.R
 import com.emojimerger.mixemojis.emojifun.adapters.EmojiAdapter
 import com.emojimerger.mixemojis.emojifun.databinding.ActivityMixEmojiBinding
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.isInternetAvailable
 import com.emojimerger.mixemojis.emojifun.modelClasses.fileDetails
 import com.emojimerger.mixemojis.emojifun.repositories.emojisRepository
 import com.emojimerger.mixemojis.emojifun.viewModelFactories.MainViewModelFactory
@@ -136,13 +137,6 @@ class MixEmojiActivity : BaseActivity() {
         return fileName
     }
 
-    private fun isInternetAvailable(): Boolean {
-        val connectivityManager =
-            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetworkInfo = connectivityManager.activeNetworkInfo
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected
-    }
-
     private fun mergeSelectedEmojis() {
         val selectedEmojiPaths = adapter.getSelectedEmojiPaths()
 
@@ -154,9 +148,7 @@ class MixEmojiActivity : BaseActivity() {
             )
 
 //            if ((binding.emoji1Img.drawable != null) && (binding.emoji2Img.drawable != null)) {
-            binding.progressImg.visibility = View.VISIBLE
-            binding.btnMerge.visibility = View.GONE
-            binding.emojiRV.visibility = View.GONE
+
             mExecutor.execute {
                 var emoji1 = getFileName(selectedEmojiPaths[0])
                 var emoji2 = getFileName(selectedEmojiPaths[1])
@@ -167,6 +159,9 @@ class MixEmojiActivity : BaseActivity() {
                 Log.d("TAG", "onCreate Database keys are: $databaseKey1 and $databaseKey2")
 //                binding.progressRV.visibility=View.VISIBLE
                 mHandler.post {
+                    binding.progressImg.visibility = View.VISIBLE
+                    binding.btnMerge.visibility = View.GONE
+                    binding.emojiRV.visibility = View.GONE
                     if (isInternetAvailable()) {
                         viewModel.checkImageInDatabase(
                             databaseKey1,

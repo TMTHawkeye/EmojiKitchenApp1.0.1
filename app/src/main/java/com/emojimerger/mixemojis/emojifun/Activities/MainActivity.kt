@@ -2,11 +2,13 @@ package com.emojimerger.mixemojis.emojifun.Activities
 
 import android.app.Dialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,7 +21,9 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import com.ads.control.admob.AppOpenManager
 import com.ads.control.ads.AperoAd
@@ -36,6 +40,10 @@ import com.emojimerger.mixemojis.emojifun.R
 import com.emojimerger.mixemojis.emojifun.databinding.ActivityMainBinding
 import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.GDPRUtil
 import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.isInternetAvailable
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.isReadStorageAllowed
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.isWriteStorageAllowed
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.openAppSettings
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.requestStoragePermission
 import com.emojimerger.mixemojis.emojifun.repositories.emojisRepository
 import com.emojimerger.mixemojis.emojifun.viewModelFactories.MainViewModelFactory
 import com.emojimerger.mixemojis.emojifun.viewmodels.MainViewModel
@@ -64,6 +72,9 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
 
         initComponents()
+        if (!isReadStorageAllowed(this@MainActivity) && !isWriteStorageAllowed(this@MainActivity)) {
+            requestStoragePermission(this)
+        }
 
         if (!isInternetAvailable()) {
             binding.imgHome.visibility = View.VISIBLE
@@ -287,18 +298,23 @@ class MainActivity : BaseActivity() {
     }
 
     private fun loadNativeAd() {
-        binding.imgHome.visibility=View.GONE
-        EmojiKitchenApp.instance!!.getLoadedNativeAd() { appNative->
-            if (appNative == null  && !AppPurchase.getInstance().isPurchased) {
+        binding.imgHome.visibility = View.GONE
+        EmojiKitchenApp.instance!!.getLoadedNativeAd() { appNative ->
+            if (appNative == null && !AppPurchase.getInstance().isPurchased) {
 //                printLog("preloaded_welcome_native", "Preloaded WelcomeNative is Null, New request is sent on WelcomeScreen")
                 AperoAd.getInstance().loadNativeAdResultCallback(this@MainActivity,
                     BuildConfig.home_screen_native,
                     R.layout.custom_native_with_media, object :
-                        AperoAdCallback(){
+                        AperoAdCallback() {
                         override fun onNativeAdLoaded(nativeAd: ApNativeAd) {
                             super.onNativeAdLoaded(nativeAd)
                             binding.settingsAdConatiner.visibility = View.VISIBLE
-                            AperoAd.getInstance().populateNativeAdView(this@MainActivity, nativeAd, binding.settingsAdConatiner, binding.homeNative.shimmerContainerNative)
+                            AperoAd.getInstance().populateNativeAdView(
+                                this@MainActivity,
+                                nativeAd,
+                                binding.settingsAdConatiner,
+                                binding.homeNative.shimmerContainerNative
+                            )
                         }
 
                         override fun onAdFailedToLoad(adError: ApAdError?) {
@@ -315,19 +331,18 @@ class MainActivity : BaseActivity() {
                             super.onAdImpression()
                         }
                     })
-            }else{
+            } else {
 //                printLog("preloaded_welcome_native", "Preloaded WelcomeNative is Displayed")
                 binding.settingsAdConatiner.visibility = View.VISIBLE
                 AperoAd.getInstance().populateNativeAdView(
                     this@MainActivity,
                     appNative,
                     binding.settingsAdConatiner,
-                    binding.homeNative.shimmerContainerNative)
+                    binding.homeNative.shimmerContainerNative
+                )
             }
         }
     }
-
-
 
 
     private fun loadInterCreate() {
@@ -335,7 +350,7 @@ class MainActivity : BaseActivity() {
             AperoAd.getInstance().getInterstitialAds(this@MainActivity, BuildConfig.home_inters)
     }
 
-    fun preLoadNativeForSettings(){
+    fun preLoadNativeForSettings() {
         AperoAd.getInstance().loadNativeAdResultCallback(
             this,
             BuildConfig.setting_native,
@@ -362,6 +377,41 @@ class MainActivity : BaseActivity() {
         super.onResume()
         preLoadNativeForSettings()
     }
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == getString(R.string.storagePermissionCode).toInt()) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this@MainActivity, "Permission Granted!", Toast.LENGTH_SHORT).show()
+//                binding.cardLetsStart.visibility = View.INVISIBLE
+                // Permission is granted, start the MainActivity
+//                onGranted()
+//                startActivity(Intent(this@SplashScreen, MainActivity::class.java))
+
+            } else {
+                // Permissions are denied
+                if (shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                    && shouldShowRequestPermissionRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                ) {
+                    // User denied permissions, show rationale and request again
+                    Toast.makeText(
+                        this,
+                        getString(R.string.allowStoragePermToast),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    // User denied permissions and selected "Don't ask again"
+                    openAppSettings(this@MainActivity)
+                }
+            }
+        }
+    }
+
 
 
 

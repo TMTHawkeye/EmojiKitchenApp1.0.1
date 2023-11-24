@@ -23,9 +23,13 @@ import com.ads.control.ads.wrapper.ApNativeAd
 import com.ads.control.ads.AperoAd
 import com.ads.control.ads.AperoAdCallback
 import com.ads.control.ads.wrapper.ApAdError
+import com.ads.control.ads.wrapper.ApInterstitialAd
 import com.ads.control.billing.AppPurchase
 import com.ads.control.funtion.AdCallback
 import com.emojimerger.mixemojis.emojifun.BuildConfig
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.isInternetAvailable
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.isReadStorageAllowed
+import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.isWriteStorageAllowed
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.LoadAdError
 import kotlinx.coroutines.Dispatchers
@@ -37,11 +41,11 @@ class SplashScreen : BaseActivity() {
     lateinit var binding: ActivitySplashScreenBinding
     private var isFirstRunApp = true
 
-    //    private val typeAdsSplash = "app_open_start"
     private val TIMEOUT_SPLASH = 30000
-    private val TIME_DELAY_SPLASH = 20
+    private val TIME_DELAY_SPLASH = 5000
 
-    private val typeAdsSplash = "inter"
+        private val typeAdsSplash = "app_open_start"
+//    private val typeAdsSplash = "inter"
     private var progressStatus = 0
     val executor = Executors.newSingleThreadExecutor()
     var runnable: Runnable? = null
@@ -54,6 +58,12 @@ class SplashScreen : BaseActivity() {
         setContentView(binding.root)
 
         preLoadNativeForMain()
+
+        welcomeInters = EmojiKitchenApp.getApplication()?.inters4WelcomeScreen
+
+        if (welcomeInters == null) {
+            loadWelcomeInters()
+        }
 
         binding.lottieMovinglight.repeatCount = LottieDrawable.INFINITE
         binding.lottieMovinglight.playAnimation()
@@ -84,26 +94,24 @@ class SplashScreen : BaseActivity() {
             binding.progressSplash.visibility = View.INVISIBLE
             binding.lottieMoving.visibility = View.INVISIBLE
 
-            if (isReadStorageAllowed() && isWriteStorageAllowed()) {
-                loadAdsSplash()
-
-            } else {
+//            if (isReadStorageAllowed() && isWriteStorageAllowed()) {
+//                loadAdsSplash()
+//            } else {
                 binding.cardLetsStart.visibility = View.VISIBLE
-            }
+//            }
         }
         handler.postDelayed(runnable!!, splashTime)
 
         binding.cardLetsStart.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                // Permission is already granted
-                runOnUiThread {
-                    loadAdsSplash()
-                }
-            }
-
+            onGranted()
+          /*  if (isReadStorageAllowed() && isWriteStorageAllowed()) {
+                onGranted()
+          } else {
+              requestStoragePermission()
+          }*/
         }
 
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 println("Back button pressed")
                 finishAffinity()
@@ -118,17 +126,39 @@ class SplashScreen : BaseActivity() {
         }
     }
 
-    private fun isReadStorageAllowed(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            this, android.Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
+    private fun onGranted() {
+        welcomeInters =  EmojiKitchenApp.getApplication()?.inters4WelcomeScreen
+        if (welcomeInters == null) {
+            gotHome()
+        } else {
+            AperoAd.getInstance()
+                .forceShowInterstitial(this, welcomeInters, object : AperoAdCallback() {
+                    override fun onAdClosed() {
+                        super.onAdClosed()
+                    }
+
+                    override fun onNextAction() {
+                        super.onNextAction()
+                        gotHome()
+                    }
+
+                    override fun onAdClicked() {
+                        super.onAdClicked()
+                    }
+
+                    override fun onInterstitialShow() {
+                        super.onInterstitialShow()
+                    }
+                })
+        }
     }
 
-    private fun isWriteStorageAllowed(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
+    private fun gotHome() {
+        startActivity(Intent(this@SplashScreen,MainActivity::class.java))
     }
+
+
+
 
     private fun requestStoragePermission() {
         //android 13
@@ -160,10 +190,10 @@ class SplashScreen : BaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == getString(R.string.storagePermissionCode).toInt()) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                binding.cardLetsStart.visibility = View.INVISIBLE
+//                binding.cardLetsStart.visibility = View.INVISIBLE
                 // Permission is granted, start the MainActivity
-                startActivity(Intent(this@SplashScreen, MainActivity::class.java))
-
+                onGranted()
+//                startActivity(Intent(this@SplashScreen, MainActivity::class.java))
 
             } else {
                 // Permissions are denied
@@ -236,21 +266,6 @@ class SplashScreen : BaseActivity() {
         startActivity(intent)
     }
 
-    private fun isInternetAvailable(): Boolean {
-        val connectivityManager =
-            getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        val network = connectivityManager.activeNetwork
-        val capabilities = connectivityManager.getNetworkCapabilities(network)
-
-        // Check if the internet is available and the device is connected
-        return capabilities != null && (
-                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
-                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
-                )
-    }
-
     fun preLoadNativeForMain() {
         AperoAd.getInstance().loadNativeAdResultCallback(
             this,
@@ -302,7 +317,7 @@ class SplashScreen : BaseActivity() {
                             super.onNextAction()
                             if (isDestroyed || isFinishing) return
                             EmojiKitchenApp.getApplication()?.isSplashAdClosed?.postValue(true)
-//                            startActivity(Intent(this@SplashScreen, MainActivity::class.java))
+                            startActivity(Intent(this@SplashScreen, MainActivity::class.java))
 
 //                            navigateToNextScreen()
                         }
@@ -373,7 +388,7 @@ class SplashScreen : BaseActivity() {
                 EmojiKitchenApp.getApplication()?.isSplashAdClosed?.postValue(true)
 
                 // Check if the permission has already been granted
-                if (isReadStorageAllowed() && isWriteStorageAllowed()) {
+                if (isReadStorageAllowed(this@SplashScreen) && isWriteStorageAllowed(this@SplashScreen)) {
                     startActivity(Intent(this@SplashScreen, MainActivity::class.java))
 
                 } else {
@@ -416,6 +431,23 @@ class SplashScreen : BaseActivity() {
                 }
             }
         )
+    }
+
+    var welcomeInters: ApInterstitialAd? = null
+
+    private fun loadWelcomeInters() {
+        AperoAd.getInstance()
+            .getInterstitialAds(this, BuildConfig.splash_inters, object : AperoAdCallback() {
+                override fun onInterstitialLoad(interstitialAd: ApInterstitialAd?) {
+                    super.onInterstitialLoad(interstitialAd)
+                    EmojiKitchenApp.getApplication()?.inters4WelcomeScreen = interstitialAd
+                    welcomeInters = interstitialAd
+                }
+
+                override fun onAdFailedToLoad(adError: ApAdError?) {
+                    super.onAdFailedToLoad(adError)
+                }
+            })
     }
 
 }
