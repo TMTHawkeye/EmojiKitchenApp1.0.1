@@ -158,7 +158,7 @@ class CreatedEmojiActivity : BaseActivity() {
                                 // Convert the Bitmap to a Drawable
                                 val drawableFromURL = BitmapDrawable(resources, bitmap)
                                 shouldShowEmoji(true)
-                                CoroutineScope(Dispatchers.IO).launch {
+//                                CoroutineScope(Dispatchers.IO).launch {
                                     viewModel.saveToFile(
                                         drawableFromURL,
                                         fileName,
@@ -187,7 +187,7 @@ class CreatedEmojiActivity : BaseActivity() {
                                                 )
                                             }
                                         }
-                                    }
+//                                    }
                                 }
                                 return true
                             }
