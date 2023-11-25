@@ -29,6 +29,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.ads.control.ads.AperoAd
 import com.ads.control.ads.AperoAdCallback
@@ -38,8 +39,13 @@ import com.ads.control.billing.AppPurchase
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.Request
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.SizeReadyCallback
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.emojimerger.mixemojis.emojifun.BuildConfig
@@ -59,9 +65,12 @@ import com.emojimerger.mixemojis.emojifun.viewmodels.MainViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
 
 import com.iambedant.text.OutlineTextView
+import com.squareup.picasso.Picasso
 import io.paperdb.Paper
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileInputStream
@@ -82,7 +91,7 @@ class CreatedEmojiActivity : BaseActivity() {
     lateinit var databaseKey2: String
     private var isFineToUseListeners = false
     private var isAlreadyDloaded = false
-    lateinit var filePath: String
+//    lateinit var filePath: String
 
 
     var mExecutor: ExecutorService = Executors.newSingleThreadExecutor()
@@ -100,8 +109,12 @@ class CreatedEmojiActivity : BaseActivity() {
         val splashTime = getString(R.string.loading_emoji_time).toLong()
         val loadingDialog = showLoadingDialog()
         loadingDialog.show()
-        loadNativeAd(this@CreatedEmojiActivity, binding.settingsAdConatiner, binding.homeNative.shimmerContainerNative,
-            BuildConfig.new_emoji_native)
+        loadNativeAd(
+            this@CreatedEmojiActivity,
+            binding.settingsAdConatiner,
+            binding.homeNative.shimmerContainerNative,
+            BuildConfig.new_emoji_native
+        )
 
         Log.d("TAG", "intent name is: $intentFrom")
         Log.d("TAG", "Emoji URL is: $emojiUrl")
@@ -109,69 +122,86 @@ class CreatedEmojiActivity : BaseActivity() {
         val runnable = Runnable {
             //intent from mix emojis
             if (intentFrom.equals(getString(R.string.mixEmojis))) {
-                Glide.with(this).asDrawable().load(emojiUrl)
-                    .into(object : CustomTarget<Drawable>() {
+                if (isInternetAvailable()) {
+                    Glide.with(this).asDrawable().load(emojiUrl)
+                        .listener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                loadingDialog.dismiss()
+                                val noEmojiDialog = showNoEmojiFoundDialog()
+                                noEmojiDialog.show()
+                                binding.settingsAdConatiner.visibility = View.INVISIBLE
+                                val button_create_new =
+                                    noEmojiDialog.findViewById<RelativeLayout>(R.id.card_create_new)
+                                button_create_new.setOnClickListener {
+                                    noEmojiDialog.dismiss()
+                                    finish()
+                                }
 
-                    override fun onStart() {
-                    }
+                                Log.d("TAG", "onBitmapFailed: ${e.toString()} ${isFirstResource}")
+                                return false
+                            }
 
-                    override fun onStop() {
-                    }
+                            override fun onResourceReady(
+                                drawable: Drawable,
+                                model: Any,
+                                target: Target<Drawable>?,
+                                dataSource: DataSource,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                val bitmap = drawable.toBitmap()
+                                Log.d("TAG", "onBitmapLoaded: bitmap have been loaded?")
+                                // Convert the Bitmap to a Drawable
+                                val drawableFromURL = BitmapDrawable(resources, bitmap)
+                                shouldShowEmoji(true)
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    viewModel.saveToFile(
+                                        drawableFromURL,
+                                        fileName,
+                                        state
+                                    ) { status, path ->
+                                        Log.d("TAG", "loaded Path : $path")
+                                        if (status) {
+                                            loadingDialog.dismiss()
+                                            Paper.book().write("filePath", path)
+                                            runOnUiThread {
+//                                filePath = path
+                                                binding.lottieCreated.visibility = View.VISIBLE
+                                                binding.lottieCreated.repeatCount =
+                                                    LottieDrawable.INFINITE
+                                                binding.lottieCreated.playAnimation()
+                                                binding.lottieMovingLight.visibility = View.VISIBLE
+                                                binding.lottieMovingLight.repeatCount =
+                                                    LottieDrawable.INFINITE
+                                                binding.lottieMovingLight.playAnimation()
+                                                binding.relativeItem.visibility = View.VISIBLE
+                                                binding.linearNew.visibility = View.VISIBLE
+                                                binding.createNewEmojiId.visibility = View.VISIBLE
+                                                binding.createGif.visibility = View.VISIBLE
+                                                binding.createdEmojiId.setImageDrawable(
+                                                    drawableFromURL
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                                return true
+                            }
 
-                    override fun onDestroy() {
-                    }
-
-                    override fun onLoadStarted(placeholder: Drawable?) {
-                    }
-
-                    override fun onLoadFailed(errorDrawable: Drawable?) {
-//                        Glide.with(this@CreatedEmojiActivity).load(emojiUrl).into(binding.createdEmojiId)
-                        loadingDialog.dismiss()
-                        val noEmojiDialog = showNoEmojiFoundDialog()
-                        noEmojiDialog.show()
-                        binding.settingsAdConatiner.visibility=View.INVISIBLE
-                        val button_create_new =
-                            noEmojiDialog.findViewById<RelativeLayout>(R.id.card_create_new)
-                        button_create_new.setOnClickListener {
-                            noEmojiDialog.dismiss()
-                            finish()
-                        }
-
-                        Log.d("TAG", "onBitmapFailed: ${errorDrawable.toString()}")
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                    }
-
-
-                    override fun onResourceReady(
-                        drawable: Drawable, transition: Transition<in Drawable>?
-                    ) {
-                        val bitmap = drawable.toBitmap()
-                        Log.d("TAG", "onBitmapLoaded: bitmap have been loaded?")
-                        // Convert the Bitmap to a Drawable
-                        val drawableFromURL = BitmapDrawable(resources, bitmap)
-                        shouldShowEmoji(true)
-                        viewModel.saveToFile(drawableFromURL, fileName, state) { status, path ->
-                            loadingDialog.dismiss()
-                            filePath = path
-                            binding.lottieCreated.visibility = View.VISIBLE
-                            binding.lottieCreated.repeatCount = LottieDrawable.INFINITE
-                            binding.lottieCreated.playAnimation()
-                            binding.lottieMovingLight.visibility = View.VISIBLE
-                            binding.lottieMovingLight.repeatCount = LottieDrawable.INFINITE
-                            binding.lottieMovingLight.playAnimation()
-                            binding.relativeItem.visibility = View.VISIBLE
-                            binding.linearNew.visibility = View.VISIBLE
-                            binding.createNewEmojiId.visibility = View.VISIBLE
-                            binding.createGif.visibility = View.VISIBLE
-
-                            binding.createdEmojiId.setImageDrawable(
-                                drawableFromURL
-                            )
-                        }
-                    }
-                })
+                        })
+                        .into(binding.createdEmojiId)
+                } else {
+                    finish()
+                    Toast.makeText(
+                        this@CreatedEmojiActivity,
+                        "No Internet Available!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
             //if intent from favourites, collection or my creation
             else {
@@ -190,7 +220,9 @@ class CreatedEmojiActivity : BaseActivity() {
                 //intent from favourites
                 if (intentFrom.equals(getString(R.string.favourites))) {
                     viewModel.setImageFromFilePath(fileName) { btmp, path ->
-                        filePath = path
+//                        filePath = path
+                        Paper.book().write("filePath", path)
+
                         val drawable = BitmapDrawable(resources, btmp)
                         binding.createdEmojiId.setImageDrawable(drawable)
                         binding.addFavEmoji.setImageDrawable(getDrawable(R.drawable.unfavourite_emoji))
@@ -205,7 +237,9 @@ class CreatedEmojiActivity : BaseActivity() {
                     var btmp = getImageFromAssets(fileName)
                     val bitmapDrawable = BitmapDrawable(resources, btmp)
                     viewModel.saveToFile(bitmapDrawable, fileName, state) { status, path ->
-                        filePath = path
+//                        filePath = path
+                        Paper.book().write("filePath", path)
+
                         fileName = path
                     }
                     Glide.with(this).asBitmap().load(btmp).centerCrop()
@@ -227,7 +261,9 @@ class CreatedEmojiActivity : BaseActivity() {
                 } else if (intentFrom.equals(getString(R.string.mygifs))) {
                     val file = File(fileName)
                     if (file.exists()) {
-                        filePath = fileName
+//                        filePath = fileName
+                        Paper.book().write("filePath", fileName)
+
                         Glide.with(this).asGif().load(file.absolutePath)
                             .into(binding.createdEmojiId)
                     }
@@ -240,7 +276,9 @@ class CreatedEmojiActivity : BaseActivity() {
                 else {
                     binding.titleCollection.text = intentName
                     viewModel.setImageFromFilePath(fileName) { btmp, path ->
-                        filePath = path
+//                        filePath = path
+                        Paper.book().write("filePath", path)
+
                         val drawable = BitmapDrawable(resources, btmp)
                         binding.createdEmojiId.setImageDrawable(drawable)
                     }
@@ -273,12 +311,12 @@ class CreatedEmojiActivity : BaseActivity() {
 
 
         binding.dloadEmoji.setOnClickListener {
-            if(!isAlreadyDloaded) {
+            if (!isAlreadyDloaded) {
                 if (!isReadStorageAllowed(this@CreatedEmojiActivity) && !isWriteStorageAllowed(this@CreatedEmojiActivity)) {
                     requestStoragePermission(this)
-                }
-                else{
-                    isAlreadyDloaded=true
+                } else {
+                    isAlreadyDloaded = true
+                    var filePath = Paper.book().read("filePath", "")
                     val file = File(filePath)
                     val shareIntent = Intent(Intent.ACTION_SEND)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -307,12 +345,15 @@ class CreatedEmojiActivity : BaseActivity() {
                         FileProvider.getUriForFile(applicationContext, authority, file)
                     }
 
-                    Toast.makeText(this, getString(R.string.savedToGalleryToast), Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        this,
+                        getString(R.string.savedToGalleryToast),
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 }
 
-            }
-            else{
+            } else {
                 Toast.makeText(this, getString(R.string.alreadysavedToast), Toast.LENGTH_SHORT)
                     .show()
             }
@@ -339,11 +380,12 @@ class CreatedEmojiActivity : BaseActivity() {
         }
 
         binding.shareEmoji.setOnClickListener {
+            var filePath = Paper.book().read("filePath", "")
+
             Log.d("TAG", "shareGif filepath: $filePath")
-            if(filePath.isEmpty()||filePath.isBlank()){
+            if (filePath!!.isEmpty() || filePath.isBlank()) {
                 Toast.makeText(this, "Can't share emoji right now!", Toast.LENGTH_SHORT).show()
-            }
-            else {
+            } else {
                 if (intentFrom.equals(getString(R.string.mygifs)) || intentFrom.equals(getString(R.string.createGif))) {
                     shareFile("gif", filePath)
                 } else {
@@ -427,7 +469,7 @@ class CreatedEmojiActivity : BaseActivity() {
     }
 
     private fun showNoEmojiFoundDialog(): Dialog {
-        var binding=CustomDialogEmojiNotFoundBinding.inflate(layoutInflater)
+        var binding = CustomDialogEmojiNotFoundBinding.inflate(layoutInflater)
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
@@ -459,7 +501,8 @@ class CreatedEmojiActivity : BaseActivity() {
                 this@CreatedEmojiActivity,
                 binding.settingsAdConatiner,
                 binding.homeNative.shimmerContainerNative,
-                BuildConfig.emoji_loading_dilog_native)
+                BuildConfig.emoji_loading_dilog_native
+            )
         }
 
         val window: Window = dialog.window!!
@@ -489,7 +532,8 @@ class CreatedEmojiActivity : BaseActivity() {
         context: CreatedEmojiActivity,
         fl_adplaceholder: FrameLayout,
         shimmerFrameLayout: ShimmerFrameLayout,
-        adId:String) {
+        adId: String
+    ) {
         EmojiKitchenApp.instance!!.getLoadedNativeAd() { appNative ->
             if (appNative == null && !AppPurchase.getInstance().isPurchased) {
 //                printLog("preloaded_welcome_native", "Preloaded WelcomeNative is Null, New request is sent on WelcomeScreen")
@@ -594,7 +638,9 @@ class CreatedEmojiActivity : BaseActivity() {
 
             MainScope().launch(Dispatchers.IO) {
                 viewModel.createGif(bitmapDrawable.bitmap, gifFileName) { fileExists, path ->
-                    filePath = path!!
+//                    filePath = path!!
+                    var filePath = Paper.book().read("filePath", "")
+
                     runOnUiThread {
                         if (fileExists) {
                             Toast.makeText(
@@ -628,7 +674,7 @@ class CreatedEmojiActivity : BaseActivity() {
         Handler(Looper.getMainLooper()).postDelayed(runnable, splashTime)
     }
 
-    fun shareFile(fileType: String, pathFile:String) {
+    fun shareFile(fileType: String, pathFile: String) {
         val file = File(pathFile)
         val shareIntent = Intent(Intent.ACTION_SEND)
         val photoURI: Uri? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -701,8 +747,9 @@ class CreatedEmojiActivity : BaseActivity() {
                 // Permission is granted, start the MainActivity
 //                onGranted()
 //                startActivity(Intent(this@SplashScreen, MainActivity::class.java))
+                var filePath = Paper.book().read("filePath", "")
 
-                isAlreadyDloaded=true
+                isAlreadyDloaded = true
                 val file = File(filePath)
                 val shareIntent = Intent(Intent.ACTION_SEND)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

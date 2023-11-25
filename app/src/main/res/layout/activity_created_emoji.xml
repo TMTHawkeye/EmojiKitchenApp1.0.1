@@ -81,10 +81,11 @@
 
                     <pl.droidsonroids.gif.GifImageView
                         android:id="@+id/created_emoji_id"
-                        android:layout_width="@dimen/_130sdp"
-                        android:layout_height="@dimen/_130sdp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:background="@android:color/transparent" />
+                        android:background="@android:color/transparent"
+                        android:visibility="visible" />
                 </RelativeLayout>
 
 

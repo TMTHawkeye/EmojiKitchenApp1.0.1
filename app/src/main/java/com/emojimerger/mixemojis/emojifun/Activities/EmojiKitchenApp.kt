@@ -10,6 +10,9 @@ import com.ads.control.ads.wrapper.ApNativeAd
 import com.ads.control.application.AdsMultiDexApplication
 import com.ads.control.config.AdjustConfig
 import com.ads.control.config.AperoAdConfig
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.emojimerger.mixemojis.emojifun.BuildConfig
 import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.GDPRUtil
 import com.google.android.ump.ConsentInformation
@@ -57,6 +60,11 @@ class EmojiKitchenApp : AdsMultiDexApplication(){
         Paper.init(this);
 
         adsInit()
+
+        Glide.with(this).setDefaultRequestOptions(
+            RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+        )
         AppOpenManager.getInstance().disableAppResumeWithActivity(LauncherActivity::class.java)
         Admob.getInstance().setNumToShowAds(0)
         AperoAd.getInstance().setCountClickToShowAds(2)

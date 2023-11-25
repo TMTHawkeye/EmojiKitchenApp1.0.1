@@ -102,6 +102,7 @@ class LauncherActivity : BaseActivity() {
     }
     
 
+    //will be called in launcherActivity for consent of user
     fun initConsent(){
         val gdpr= GDPRUtil(this)
         gdpr.setGdpr()

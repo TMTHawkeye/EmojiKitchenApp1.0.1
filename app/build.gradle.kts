@@ -15,11 +15,11 @@ android {
             keyPassword = "alawraq"
             storePassword = "alawraq"
             storeFile =
-                file("C:\\Users\\AERO COMPUTERS\\Desktop\\EmojiKitchenApp-master\\alawraqkeystore\\alawraq.jks")
+                file("E:\\Developed Apps\\EmojiKitchenApp-master\\alawraqkeystore\\alawraq.jks")
         }
         create("release") {
             storeFile =
-                file("C:\\Users\\AERO COMPUTERS\\Desktop\\EmojiKitchenApp-master\\alawraqkeystore\\alawraq.jks")
+                file("E:\\Developed Apps\\EmojiKitchenApp-master\\alawraqkeystore\\alawraq.jks")
             storePassword = "alawraq"
             keyPassword = "alawraq"
             keyAlias = "alawraq"
@@ -159,6 +159,7 @@ dependencies {
 
     //glide library
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.squareup.picasso:picasso:2.8")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     //sdp and ssp library

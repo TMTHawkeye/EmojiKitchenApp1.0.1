@@ -13,25 +13,23 @@ import java.util.concurrent.atomic.AtomicBoolean
 class GDPRUtil(var activity: Activity) {
     private var isMobileAdsInitializeCalled = AtomicBoolean(false)
 
-
-
     var TAG="GDPR_TAG"
 
     fun setGdpr(){
-        val debugSettings = ConsentDebugSettings.Builder(activity)
-            .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
-            .addTestDeviceHashedId("33BE2250B43518CCDA7DE426D04EE231")
-            .build()
+//        val debugSettings = ConsentDebugSettings.Builder(activity)
+//            .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+//            .addTestDeviceHashedId("33BE2250B43518CCDA7DE426D04EE231")
+//            .build()
+//
+//        val params = ConsentRequestParameters
+//            .Builder()
+//            .setConsentDebugSettings(debugSettings)
+//            .build()
 
         val params = ConsentRequestParameters
             .Builder()
-            .setConsentDebugSettings(debugSettings)
+            .setTagForUnderAgeOfConsent(false)
             .build()
-
-//        val params = ConsentRequestParameters
-//            .Builder()
-//            .setTagForUnderAgeOfConsent(false)
-//            .build()
 
         var consentInformation = UserMessagingPlatform.getConsentInformation(activity)
         consentInformation.requestConsentInfoUpdate(

@@ -9,12 +9,15 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
+import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import com.emojimerger.mixemojis.emojifun.R
 import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.AnimatedGifEncoder
 import com.emojimerger.mixemojis.emojifun.emojiMixerUtils.EmojiMixer
 import com.emojimerger.mixemojis.emojifun.modelClasses.emojiDetails
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -61,9 +64,9 @@ class emojisRepository(context: Activity) {
                     // Key1 exists in the database
                     val imageDetails =
                         dataSnapshot.child(databaseKey1).getValue(emojiDetails::class.java)
-//                    var fileUri=imageDetails!!.fileUrl
+                    var fileUri = Uri.parse(imageDetails!!.fileUrl)
                     callback(
-                        imageDetails!!.fileUrl,
+                        fileUri.toString(),
                         imageDetails.fileName.split(".").first(),
                         false
                     )
@@ -75,9 +78,9 @@ class emojisRepository(context: Activity) {
                     // Key2 exists in the database
                     val imageDetails =
                         dataSnapshot.child(databaseKey2).getValue(emojiDetails::class.java)
-//                    var fileUri=imageDetails!!.fileUrl
+                    var fileUri = Uri.parse(imageDetails!!.fileUrl)
                     callback(
-                        imageDetails!!.fileUrl,
+                        fileUri.toString(),
                         imageDetails.fileName.split(".").first(),
                         false
                     )
@@ -102,10 +105,10 @@ class emojisRepository(context: Activity) {
     //method to store firestore generated url in realtime database
     private fun storeStringInDatabase(
         fileName: String,
-        obtainedURL: String,
+        obtainedURL: Uri,
     ): Boolean {
         var uploadDataStatus = false
-        val fileDetails = emojiDetails("${fileName}.png", "$obtainedURL", 0, 0, 0, 0)
+        val fileDetails = emojiDetails("${fileName}.png", obtainedURL.toString(), 0, 0, 0, 0)
 //        val (databaseUniqueKey) = fileName
         var newRef = databaseReference!!.child(fileName)
         newRef.setValue(fileDetails)
@@ -113,7 +116,7 @@ class emojisRepository(context: Activity) {
                 uploadDataStatus = true
                 Log.d(
                     "TAG",
-                    "storeStringInDataBaseSuccess: file(${fileName}.png) with url($obtainedURL) have been saved successfully in Realtime Databse!"
+                    "storeStringInDataBaseSuccess: file(${fileName}.png) with url(${obtainedURL.toString()}) have been saved successfully in Realtime Databse!"
                 )
             }
             .addOnFailureListener {
@@ -121,6 +124,9 @@ class emojisRepository(context: Activity) {
                 // Handle any errors
                 Log.d("TAG", "storeStringInDataBaseFailure: ${it.message}")
             }
+
+
+
         return uploadDataStatus
     }
 
@@ -128,7 +134,7 @@ class emojisRepository(context: Activity) {
     private fun uploadToFireStore(
         str: String,
         nameOfFile: String,
-        callback: (Boolean,path:String) -> Unit
+        callback: (Boolean, path: String) -> Unit
     ) {
         var file = File(str)
         var filePath = Uri.fromFile(file)
@@ -137,17 +143,26 @@ class emojisRepository(context: Activity) {
         ref.putFile(filePath)
             .addOnSuccessListener(object : OnSuccessListener<UploadTask.TaskSnapshot> {
                 override fun onSuccess(taskSnapshot: UploadTask.TaskSnapshot) {
-                    ref.downloadUrl
-                        .addOnSuccessListener { uri ->
-                            var downloadURL = uri.toString()
-                            Log.d("TAG", "Obtained url from firestore is: " + downloadURL)
-                            callback(storeStringInDatabase(nameOfFile, downloadURL),"")
+//                    ref.downloadUrl
+//                        .addOnSuccessListener { uri ->
+//                            var downloadURL = uri
 
-                        }
+                    val handler = Handler()
+                    handler.postDelayed(Runnable { }, 5000)
+
+                    val urlTask: Task<Uri> = taskSnapshot.storage.downloadUrl
+                    while (!urlTask.isSuccessful());
+                    val downloadUrl: Uri = urlTask.getResult()
+                    Log.d("TAG", "Obtained url from firestore is: " + downloadUrl)
+
+                    callback(storeStringInDatabase(nameOfFile, downloadUrl), "")
+
+
+//                        }
                 }
 
             }).addOnFailureListener {
-                callback(false,"")
+                callback(false, "")
 
             }
 
@@ -158,20 +173,21 @@ class emojisRepository(context: Activity) {
         bitmapDrawable: BitmapDrawable,
         filename: String,
         state: Boolean,
-        callback: (Boolean,path:String) -> Unit
+        callback: (Boolean, path: String) -> Unit
     ) {
         val sanitizedFileName = sanitizeFilename(filename)!!
         try {
             if (bitmapDrawable.getBitmap() != null) {
                 val bt: Bitmap = bitmapDrawable.getBitmap()
                 return saveToInternalStorage(bt, sanitizedFileName, state, callback)
-            }
-            else{
-                callback(false,"")
+            } else {
+                Log.d("TAG", "saveBitmapToFileNull")
+
+                callback(false, "")
             }
         } catch (e: Exception) {
             Log.d("TAG", "saveBitmapToFileError: ${e.message}")
-            callback(false,"")
+            callback(false, "")
         }
     }
 
@@ -217,7 +233,7 @@ class emojisRepository(context: Activity) {
         bitmapImage: Bitmap,
         nameOfFile: String,
         state: Boolean,
-        callback: (Boolean,path:String) -> Unit
+        callback: (Boolean, path: String) -> Unit
     ) {
         val context = mcontext
         try {
@@ -248,10 +264,10 @@ class emojisRepository(context: Activity) {
             if (state) {
                 uploadToFireStore(file.absolutePath, nameOfFile, callback)
             }
-            callback(true,file.absolutePath)
+            callback(true, file.absolutePath)
         } catch (e: IOException) {
             e.printStackTrace()
-            callback(true,"")
+            callback(false, "")
 
         }
     }
@@ -398,11 +414,11 @@ class emojisRepository(context: Activity) {
         listofFiles?.let { callback(it) }
     }
 
-    fun setImageFromFilePath(filePath: String, callback: (Bitmap,path:String) -> Unit) {
+    fun setImageFromFilePath(filePath: String, callback: (Bitmap, path: String) -> Unit) {
         val file = File(filePath)
         if (file.exists()) {
             val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-            callback(bitmap,file.absolutePath)
+            callback(bitmap, file.absolutePath)
 
         } else {
             Log.e("TAG", "File does not exist at path: $filePath")
@@ -427,7 +443,11 @@ class emojisRepository(context: Activity) {
         callback(imagePathList)
     }
 
-    fun createGif(inputImage: Bitmap, fileName: String,callback: (Boolean,path:String?) -> Unit) {
+    fun createGif(
+        inputImage: Bitmap,
+        fileName: String,
+        callback: (Boolean, path: String?) -> Unit
+    ) {
         try {
             val outputGifPath =
                 File(
@@ -485,14 +505,13 @@ class emojisRepository(context: Activity) {
                 Log.d("TAG", "GIF created successfully at: $outputGifPath")
                 gifEncoder.finish()
                 outputStream.close()
-                callback(false,outputGifPath.absolutePath)
-            }
-            else{
-                callback(true,outputGifPath.absolutePath)
+                callback(false, outputGifPath.absolutePath)
+            } else {
+                callback(true, outputGifPath.absolutePath)
             }
         } catch (e: Exception) {
             Log.d("TAG", "Gif Creation Exception: ${e.message}")
-            callback(true,null)
+            callback(true, null)
         }
 
 //        // Display the created GIF
@@ -502,12 +521,10 @@ class emojisRepository(context: Activity) {
 
     }
 
-    fun getListOfFilesFromInternalStorage(folderName:String,callback: (List<File>) -> Unit){
+    fun getListOfFilesFromInternalStorage(folderName: String, callback: (List<File>) -> Unit) {
         val directory = File(mcontext!!.getExternalFilesDir("$folderName"), "")
         callback(directory.listFiles()?.toList() ?: emptyList())
     }
-
-
 
 
 //    fun zipEmojisFromFirebaseStorage(nameOfFolder:String,callback: (Boolean) -> Unit) {
