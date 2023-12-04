@@ -387,7 +387,7 @@ class MainActivity : BaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == getString(R.string.storagePermissionCode).toInt()) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this@MainActivity, "Permission Granted!", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this@MainActivity, "Permission Granted!", Toast.LENGTH_SHORT).show()
 //                binding.cardLetsStart.visibility = View.INVISIBLE
                 // Permission is granted, start the MainActivity
 //                onGranted()

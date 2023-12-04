@@ -658,8 +658,8 @@ class CreatedEmojiActivity : BaseActivity() {
                                         this@CreatedEmojiActivity, MyGifActivity::class.java
                                     )
                                 )
-                                finish()
                                 dialog.dismiss()
+                                finish()
 
                             } else {
                                 dialog.dismiss()

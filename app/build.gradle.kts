@@ -32,8 +32,8 @@ android {
         applicationId = "com.emojimerger.mixemojis.emojifun"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.0.1"
         setProperty("archivesBaseName", "Alawraq-EmojiMixer-$versionName")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -43,7 +43,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources=true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -196,6 +197,6 @@ dependencies {
     //admob gdpr
     implementation ("com.google.android.ump:user-messaging-platform:2.1.0")
 
-
-
+    //billing lirary
+    implementation("com.android.billingclient:billing:6.0.1")
 }

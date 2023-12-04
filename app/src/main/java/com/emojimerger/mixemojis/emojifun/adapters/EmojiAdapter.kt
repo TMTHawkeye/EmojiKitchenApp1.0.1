@@ -83,13 +83,13 @@ class EmojiAdapter(
     private fun getImageFromAssets(filePath: String): Bitmap? {
         val assetManager = context.assets
         val istr: InputStream
-        try {
+        return try {
             istr = assetManager.open(filePath)
-            return BitmapFactory.decodeStream(istr)
+             BitmapFactory.decodeStream(istr)
         } catch (e: IOException) {
             e.printStackTrace()
+            null
         }
-        return null
     }
 
     override fun getItemCount(): Int {
