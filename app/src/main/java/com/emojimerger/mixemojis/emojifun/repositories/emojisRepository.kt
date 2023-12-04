@@ -95,8 +95,7 @@ class emojisRepository(context: Activity) {
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // Handle any errors
-                Log.d("TAG", "onCancelled: ${databaseError.message}")
+                Log.d("TAG", "Cancelled: ${databaseError.message}")
             }
         })
 
